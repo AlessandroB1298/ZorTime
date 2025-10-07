@@ -1,44 +1,57 @@
-"use client";
-
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // shadcn/ui Tabs components
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// Define your themes with a consistent structure
+const themes = [
+  {
+    key: "light",
+    icon: Sun,
+    label: "Light theme",
+  },
+  {
+    key: "dark",
+    icon: Moon,
+    label: "Dark theme",
+  },
+];
 
-export function ThemeSwitcher() {
-  const { setTheme } = useTheme();
+export default function ThemeSwitcher() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="dark:bg-background bg-background focus-visible:ring-0 focus-visible:ring-offset-0"
-        >
-          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90 dark:text-white text-black" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0 dark:text-white text-black" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Tabs
+      value={theme}
+      onValueChange={(newThemeKey) => setTheme(newThemeKey)}
+      className="w-fit"
+    >
+      <TabsList className="grid w-full grid-cols-2">
+        {themes.map((t) => {
+          const Icon = t.icon;
+          return (
+            <TabsTrigger
+              key={t.key}
+              value={t.key}
+              aria-label={t.label}
+              className="px-2 hover:cursor-pointer"
+            >
+              <Icon className="h-[1.2rem] w-[1.2rem]" />
+              {/* Optional: Add a tooltip or visually hidden text for the label */}
+              <span className="sr-only">{t.label}</span>
+            </TabsTrigger>
+          );
+        })}
+      </TabsList>
+    </Tabs>
   );
 }

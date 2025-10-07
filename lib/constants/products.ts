@@ -1,12 +1,12 @@
 import { Bell, Bot, Calendar, LucideProps, Notebook } from "lucide-react";
 
 export type productType = {
-  productTitle: String;
+  productTitle: string;
   productIcon: React.ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
   >;
-  productImage: String;
-  productDesc: String;
+  productImage: string;
+  productDesc: string;
 };
 
 export const productItems: productType[] = [

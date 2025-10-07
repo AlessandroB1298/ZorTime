@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 
 import { Spotlight } from "@/components/ui/spotlight-new";
+import Link from "next/link";
 
 export default function Hero() {
   const mainTextRef = useRef<HTMLDivElement>(null);
@@ -89,12 +90,15 @@ export default function Hero() {
               ref={buttonRef}
               className="flex flex-col sm:flex-row gap-4 mt-4"
             >
-              <Button
-                size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
-              >
-                Get Started Free
-              </Button>
+              <Link href={"/sign-up"}>
+                <Button
+                  size="lg"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
+                >
+                  Get Started Free
+                </Button>
+              </Link>
+
               <Button
                 size="lg"
                 variant="outline"

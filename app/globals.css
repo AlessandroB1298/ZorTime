@@ -14,7 +14,7 @@
   --card-foreground: #003049;
   --popover: #fdf0d5;
   --popover-foreground: #003049;
-  --primary: #780000; /* dark maroon */
+  --primary: #669bbc; /* dark maroon */
   --primary-foreground: #fdf0d5;
   --secondary: #669bbc; /* light blue */
   --secondary-foreground: #003049;
@@ -35,12 +35,12 @@
   --radius: 0.5rem;
   --sidebar: #003049;
   --sidebar-foreground: #fdf0d5;
-  --sidebar-primary: #780000;
+  --sidebar-primary: #fdf0d5;
   --sidebar-primary-foreground: #fdf0d5;
   --sidebar-accent: #669bbc;
   --sidebar-accent-foreground: #003049;
   --sidebar-border: #669bbc;
-  --sidebar-ring: #780000;
+  --sidebar-ring: #fdf0d5;
 }
 
 .dark {
@@ -68,10 +68,10 @@
   --chart-3: #669bbc;
   --chart-4: #fdf0d5;
   --chart-5: #003049;
-  --sidebar: #780000;
+  --sidebar: #fdf0d5;
   --sidebar-foreground: #fdf0d5;
-  --sidebar-primary: #c1121f;
-  --sidebar-primary-foreground: #fdf0d5;
+  --sidebar-primary: #669bbc;
+  --sidebar-primary-foreground: #669bbc;
   --sidebar-accent: #669bbc;
   --sidebar-accent-foreground: #003049;
   --sidebar-border: #003049;
