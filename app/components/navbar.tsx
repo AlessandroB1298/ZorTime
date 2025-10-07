@@ -2,8 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { navItems } from "@/lib/constants/narbarItems";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Calendar, Hourglass } from "lucide-react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 export const NavbarComponent = () => {
   const { theme } = useTheme();
@@ -32,12 +34,14 @@ export const NavbarComponent = () => {
             </li>
           ))}
           <div>
-            <Button
-              variant={"default"}
-              className="hover:bg-muted-foreground hover:cursor-pointer"
-            >
-              Sign Up
-            </Button>
+            <Link href={"/sign-up"}>
+              <Button
+                variant={"default"}
+                className="hover:bg-muted-foreground hover:cursor-pointer"
+              >
+                Sign Up
+              </Button>
+            </Link>
           </div>
         </ul>
       </div>

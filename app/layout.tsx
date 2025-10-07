@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/themeProvider";
 import ReactLenis from "lenis/react";
-import { NavbarComponent } from "./components/navbar";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/themes";
 
 export const metadata: Metadata = {
   title: "Zortime",
@@ -26,23 +17,23 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
-        <head />
-        <ReactLenis root>
-          <body>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <NavbarComponent />
-
-              {children}
-            </ThemeProvider>
-          </body>
-        </ReactLenis>
-      </html>
+      <ClerkProvider>
+        <html lang="en" suppressHydrationWarning>
+          <head />
+          <ReactLenis root>
+            <body>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </body>
+          </ReactLenis>
+        </html>
+      </ClerkProvider>
     </>
   );
 }
