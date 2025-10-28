@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { EventType, PRIORITYLEVEL, Event } from "@/lib/types/event";
+import {
+  EventType,
+  PRIORITYLEVEL,
+  Event,
+  ReccuringType,
+  Priority,
+} from "@/lib/types/event";
 import {
   Dialog,
   DialogContent,
@@ -253,7 +259,7 @@ export default function EventForm() {
                 onValueChange={(value) =>
                   setFormData({
                     ...formData,
-                    priorityLevel: value as "low" | "medium" | "high",
+                    priorityLevel: value as Priority,
                   })
                 }
               >
@@ -338,8 +344,7 @@ export default function EventForm() {
                 onValueChange={(value) =>
                   setFormData({
                     ...formData,
-                    recurringPattern:
-                      (value as "weekly") || "daily" || "monthly",
+                    recurringPattern: value as ReccuringType,
                   })
                 }
               >

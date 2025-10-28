@@ -1,5 +1,6 @@
 export type EventType = "meeting" | "task" | "reminder" | "personal" | "work";
-
+export type ReccuringType = "weekly" | "daily" | "monthly";
+export type Priority = "low" | "medium" | "high";
 export interface Event {
   id: string;
   type: string;
