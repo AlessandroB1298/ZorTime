@@ -1,5 +1,5 @@
 // app/not-found.js or app/not-found.tsx
-import { ArrowBigLeft, ArrowBigRight, MoveRight } from "lucide-react";
+import { MoveRight } from "lucide-react";
 import Link from "next/link";
 
 export default function NotFound() {

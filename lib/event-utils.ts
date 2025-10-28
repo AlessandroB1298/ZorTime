@@ -1,0 +1,259 @@
+import type { Event, EventType, GroupedEvent } from "./types/event";
+
+export const EVENT_TYPE_COLORS: Record<
+  string,
+  { bg: string; text: string; label: string }
+> = {
+  meeting: {
+    bg: "bg-[var(--event-meeting)]",
+    text: "text-[var(--event-meeting-foreground)]",
+    label: "Meeting",
+  },
+  task: {
+    bg: "bg-[var(--event-task)]",
+    text: "text-[var(--event-task-foreground)]",
+    label: "Task",
+  },
+  reminder: {
+    bg: "bg-[var(--event-reminder)]",
+    text: "text-[var(--event-reminder-foreground)]",
+    label: "Reminder",
+  },
+  personal: {
+    bg: "bg-[var(--event-personal)]",
+    text: "text-[var(--event-personal-foreground)]",
+    label: "Personal",
+  },
+  work: {
+    bg: "bg-[var(--event-work)]",
+    text: "text-[var(--event-work-foreground)]",
+    label: "Work",
+  },
+};
+
+export function formatTime(date: Date): string {
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
+export function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export function formatDateShort(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+export function isSameDay(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+export function getWeekDays(date: Date): Date[] {
+  const day = date.getDay();
+  const diff = date.getDate() - day;
+  const sunday = new Date(date.setDate(diff));
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(sunday);
+    d.setDate(sunday.getDate() + i);
+    return d;
+  });
+}
+
+export function getMonthDays(date: Date): Date[] {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+
+  const days: Date[] = [];
+
+  // Add days from previous month
+  const firstDayOfWeek = firstDay.getDay();
+  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+    const d = new Date(firstDay);
+    d.setDate(firstDay.getDate() - i - 1);
+    days.push(d);
+  }
+
+  // Add days of current month
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+    days.push(new Date(year, month, i));
+  }
+
+  // Add days from next month to complete the grid
+  const remainingDays = 42 - days.length;
+  for (let i = 1; i <= remainingDays; i++) {
+    const d = new Date(lastDay);
+    d.setDate(lastDay.getDate() + i);
+    days.push(d);
+  }
+
+  return days;
+}
+
+export function getEventsForDay(events: Event[], date: Date): Event[] {
+  return events.filter((event) => isSameDay(new Date(event.start_time), date));
+}
+
+export function getEventsForWeek(events: Event[], date: Date): Event[] {
+  const weekDays = getWeekDays(new Date(date));
+  const startOfWeek = weekDays[0];
+  const endOfWeek = weekDays[6];
+
+  return events.filter((event) => {
+    const eventDate = new Date(event.start_time);
+    return eventDate >= startOfWeek && eventDate <= endOfWeek;
+  });
+}
+
+export function getEventsForMonth(events: Event[], date: Date): Event[] {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  return events.filter((event) => {
+    const eventDate = new Date(event.start_time);
+    return eventDate.getFullYear() === year && eventDate.getMonth() === month;
+  });
+}
+
+/**
+ * Groups an array of Event objects into an array of GroupedEvent objects,
+ * where the category is derived from event.type.
+ * @param events The array of Event objects to group.
+ * @returns An array of GroupedEvent objects.
+ */
+
+export function groupEventCategory(events: Event[]): GroupedEvent[] {
+  const groupedMap = new Map<string, GroupedEvent>();
+  events.forEach((event) => {
+    const category = event.type;
+    if (groupedMap.has(category)) {
+      groupedMap.get(category)!.events.push(event);
+    } else {
+      groupedMap.set(category, {
+        category: category,
+        events: [event],
+        color: EVENT_TYPE_COLORS[event.type].bg,
+      });
+    }
+  });
+  const finalEventGroup: GroupedEvent[] = Array.from(groupedMap.values()).map(
+    (group) => {
+      return {
+        ...group,
+      };
+    },
+  );
+
+  return finalEventGroup;
+}
+
+export function formatEventDate(startTime: string, endTime: string): string {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // Check if it's today
+  const isToday = start.toDateString() === today.toDateString();
+  const isTomorrow = start.toDateString() === tomorrow.toDateString();
+
+  // Format date
+  const dateStr = isToday
+    ? "Today"
+    : isTomorrow
+      ? "Tomorrow"
+      : start.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+  // Format time
+  const startTimeStr = start.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  const endTimeStr = end.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return `${dateStr} • ${startTimeStr} - ${endTimeStr}`;
+}
+
+export function capitalizeString(value: string): string {
+  const firstLetter = value.charAt(0).toUpperCase();
+  const remainderString = value.substring(1, value.length);
+  return firstLetter + remainderString;
+}
+
+export function convert24HourTo12Hour(time24h: string): string {
+  if (!time24h || !time24h.includes(":")) {
+    return "Invalid Time Format";
+  }
+
+  const [hourStr, minuteStr] = time24h.split(":");
+  let hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+
+  if (
+    isNaN(hour) ||
+    isNaN(minute) ||
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return "Invalid Time Values";
+  }
+
+  const ampm = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12;
+  hour = hour === 0 ? 12 : hour; // Convert 0 (midnight) to 12 AM
+
+  const formattedMinute = minute < 10 ? `0${minute}` : `${minute}`;
+
+  return `${hour}:${formattedMinute} ${ampm}`;
+}
+
+export function convert12HourTo24Hour(time12h: string): string {
+  const [timePart, ampmPart] = time12h.split(" ");
+  let [hours, minutes, seconds] = timePart.split(":");
+
+  let hourNum = parseInt(hours, 10);
+
+  if (ampmPart === "PM" && hourNum !== 12) {
+    hourNum += 12;
+  } else if (ampmPart === "AM" && hourNum === 12) {
+    hourNum = 0; // Midnight (12 AM) becomes 00 in 24-hour format
+  }
+
+  // Ensure hours are always two digits
+  const hour24h = hourNum.toString().padStart(2, "0");
+
+  // If seconds are not provided, default to '00'
+  seconds = seconds || "00";
+
+  return `${hour24h}:${minutes}:${seconds}`;
+}

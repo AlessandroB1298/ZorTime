@@ -1,5 +1,5 @@
 import { Hourglass } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -8,9 +8,9 @@ export default function Footer() {
         <div className="md:flex md:justify-between">
           <div className="flex flex-row gap-2 w-full">
             <Hourglass size={30} color="#669bbc" />
-            <a href="/" className="text-2xl font-extrabold">
+            <Link href="/" className="text-2xl font-extrabold">
               Zortime
-            </a>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
             <div>
@@ -19,20 +19,20 @@ export default function Footer() {
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
                 <li className="mb-4">
-                  <a
+                  <Link
                     href="https://github.com/themesberg/flowbite"
                     className="hover:underline "
                   >
                     Github
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="https://discord.gg/4eeurUVvTy"
                     className="hover:underline"
                   >
                     Discord
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

@@ -3,7 +3,6 @@ import "./globals.css";
 import { ThemeProvider } from "./components/themeProvider";
 import ReactLenis from "lenis/react";
 import { ClerkProvider } from "@clerk/nextjs";
-import { shadcn } from "@clerk/themes";
 
 export const metadata: Metadata = {
   title: "Zortime",

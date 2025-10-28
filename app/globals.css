@@ -1,3 +1,14 @@
+@import "../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-buttons/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-calendars/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-dropdowns/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-inputs/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-lists/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-navigations/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-popups/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-react-schedule/styles/material.css";
+
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
@@ -8,7 +19,7 @@
 
 :root {
   /* Using the exact color palette provided by user */
-  --background: #fdf0d5; /* cream */
+  --background: #ffffff; /* cream */
   --foreground: #003049; /* dark blue */
   --card: #fdf0d5;
   --card-foreground: #003049;
@@ -41,11 +52,23 @@
   --sidebar-accent-foreground: #003049;
   --sidebar-border: #669bbc;
   --sidebar-ring: #fdf0d5;
+
+  /* Event type colors */
+  --event-meeting: oklch(0.65 0.2 250);
+  --event-meeting-foreground: oklch(0.98 0 0);
+  --event-task: oklch(0.7 0.18 150);
+  --event-task-foreground: oklch(0.98 0 0);
+  --event-reminder: oklch(0.75 0.15 60);
+  --event-reminder-foreground: oklch(0.15 0 0);
+  --event-personal: oklch(0.68 0.22 330);
+  --event-personal-foreground: oklch(0.98 0 0);
+  --event-work: oklch(0.55 0.18 220);
+  --event-work-foreground: oklch(0.98 0 0);
 }
 
 .dark {
   --background: #0d1b2a;
-  --foreground: #fdf0d5;
+  --foreground: #ffffff;
   --card: #003049;
   --card-foreground: #fdf0d5;
   --popover: #003049;
@@ -57,7 +80,7 @@
   --muted: #780000;
   --muted-foreground: #669bbc;
   --accent: #778da9;
-  --accent-foreground: #fdf0d5;
+  --accent-foreground: #ffffff;
   --destructive: #c1121f;
   --destructive-foreground: #fdf0d5;
   --border: #780000;
@@ -68,8 +91,8 @@
   --chart-3: #669bbc;
   --chart-4: #fdf0d5;
   --chart-5: #003049;
-  --sidebar: #fdf0d5;
-  --sidebar-foreground: #fdf0d5;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #ffffff;
   --sidebar-primary: #669bbc;
   --sidebar-primary-foreground: #669bbc;
   --sidebar-accent: #669bbc;

@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { navItems } from "@/lib/constants/narbarItems";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { Calendar, Hourglass } from "lucide-react";
+import { Hourglass } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 
@@ -18,19 +17,19 @@ export const NavbarComponent = () => {
           ) : (
             <Hourglass color="#669bbc" />
           )}
-          <a href="/" className="text-xl font-extrabold text-foreground">
+          <Link href="/" className="text-xl font-extrabold text-foreground">
             Zortime
-          </a>
+          </Link>
         </div>
         <ul className="flex flex-row items-center justify-end gap-8">
           {navItems.map((item, index) => (
             <li key={index + 1}>
-              <a
+              <Link
                 className="hover:text-primary hover:cursor-pointer"
                 href={item.link}
               >
                 {item.title}{" "}
-              </a>
+              </Link>
             </li>
           ))}
           <div>
