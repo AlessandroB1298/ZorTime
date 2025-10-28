@@ -30,7 +30,7 @@ type EditEventProps = {
   event: Event;
 };
 
-export default function EditEventForm({ event }: EditEventProps) {
+export default function EditEventForm({ event }: Readonly<EditEventProps>) {
   const [open, setOpen] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -171,7 +171,7 @@ export default function EditEventForm({ event }: EditEventProps) {
               <Select
                 value={formData.recurringPattern}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, recurringPattern: value as any })
+                  setFormData({ ...formData, recurringPattern: value })
                 }
               >
                 <SelectTrigger>

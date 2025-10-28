@@ -22,14 +22,14 @@ export function CalendarHeader({
   view,
   onViewChange,
   onNavigate,
-}: CalendarHeaderProps) {
+}: Readonly<CalendarHeaderProps>) {
   const getHeaderText = () => {
     const options: Intl.DateTimeFormatOptions =
       view === "month"
         ? { month: "long", year: "numeric" }
         : view === "week"
-        ? { month: "short", day: "numeric", year: "numeric" }
-        : { month: "long", day: "numeric", year: "numeric" };
+          ? { month: "short", day: "numeric", year: "numeric" }
+          : { month: "long", day: "numeric", year: "numeric" };
 
     return currentDate.toLocaleDateString("en-US", options);
   };
@@ -37,7 +37,10 @@ export function CalendarHeader({
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <h1 className="text-3xl font-bold tracking-tight">  {getHeaderText()}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {" "}
+          {getHeaderText()}
+        </h1>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -61,9 +64,7 @@ export function CalendarHeader({
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
-        <span className="text-lg font-medium text-muted-foreground ">
-          View
-        </span>
+        <span className="text-lg font-medium text-muted-foreground ">View</span>
       </div>
 
       <div className="ml-2">
