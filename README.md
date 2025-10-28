@@ -16,3 +16,8 @@ npx convex dev
 ```
 
 
+## Features
+
+### Scheduler
+
+Schedule events relating to school and work 

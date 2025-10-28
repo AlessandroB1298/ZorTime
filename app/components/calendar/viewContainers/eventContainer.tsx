@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Event, GroupedEvent } from "@/lib/types/event";
+import { GroupedEvent } from "@/lib/types/event";
 import { Calendar1, MapPin, Repeat } from "lucide-react";
 import { formatEventDate } from "@/lib/event-utils";
 

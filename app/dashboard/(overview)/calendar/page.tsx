@@ -3,7 +3,6 @@ import { CalendarHeader } from "@/app/components/calendar/calendarHeader";
 import EventForm from "@/app/components/calendar/eventForm";
 import { CalendarView } from "@/lib/types/event";
 import { useState } from "react";
-import { Event } from "@/lib/types/event";
 import { useUser } from "@clerk/nextjs";
 import CalendarViewContainer from "@/app/components/calendar/viewContainers/CalendarViewContainer";
 import AgendaViewContainer from "@/app/components/calendar/viewContainers/AgendaViewContainer";
@@ -16,8 +15,6 @@ export default function Page() {
     if (!isLoaded || !isSignedIn) {
         return null;
     }
-
-    const handleSave = (event: Event) => { };
 
     const handleNavigate = (direction: "prev" | "next" | "today") => {
         if (direction === "today") {

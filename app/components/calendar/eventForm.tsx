@@ -253,7 +253,7 @@ export default function EventForm() {
                 onValueChange={(value) =>
                   setFormData({
                     ...formData,
-                    priorityLevel: value as string,
+                    priorityLevel: value as "low" | "medium" | "high",
                   })
                 }
               >
@@ -281,7 +281,7 @@ export default function EventForm() {
               id="location"
               value={formData.location}
               onChange={(e) =>
-                setFormData({ ...formData, location: e.targevt.value })
+                setFormData({ ...formData, location: e.target.value })
               }
               placeholder="Conference Room A"
             />
@@ -338,7 +338,8 @@ export default function EventForm() {
                 onValueChange={(value) =>
                   setFormData({
                     ...formData,
-                    recurringPattern: value as any,
+                    recurringPattern:
+                      (value as "weekly") || "daily" || "monthly",
                   })
                 }
               >

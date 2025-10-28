@@ -9,7 +9,6 @@ import {
 } from "@/lib/event-utils";
 import { Card } from "@/components/ui/card";
 import { MapPin, Clock, Calendar, Repeat, Trash2 } from "lucide-react";
-import { useState } from "react";
 import EditEventForm from "@/app/components/calendar/EditEvent";
 
 export interface AgendaViewProps {
@@ -23,8 +22,6 @@ type ConvertedEvent = Omit<Event, "start_time" | "end_time"> & {
 };
 
 export function AgendaView({ events, currentDate }: AgendaViewProps) {
-  const [eventform, setEventform] = useState<boolean>(false);
-
   const rawMonthEvents = getEventsForMonth(events, currentDate);
 
   const monthEvents: ConvertedEvent[] = rawMonthEvents

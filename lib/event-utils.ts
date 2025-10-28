@@ -1,4 +1,4 @@
-import type { Event, EventType, GroupedEvent } from "./types/event";
+import type { Event, GroupedEvent } from "./types/event";
 
 export const EVENT_TYPE_COLORS: Record<
   string,
@@ -239,7 +239,7 @@ export function convert24HourTo12Hour(time24h: string): string {
 
 export function convert12HourTo24Hour(time12h: string): string {
   const [timePart, ampmPart] = time12h.split(" ");
-  let [hours, minutes, seconds] = timePart.split(":");
+  const [hours, minutes, seconds] = timePart.split(":");
 
   let hourNum = parseInt(hours, 10);
 
@@ -253,7 +253,6 @@ export function convert12HourTo24Hour(time12h: string): string {
   const hour24h = hourNum.toString().padStart(2, "0");
 
   // If seconds are not provided, default to '00'
-  seconds = seconds || "00";
 
   return `${hour24h}:${minutes}:${seconds}`;
 }
