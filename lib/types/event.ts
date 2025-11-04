@@ -1,6 +1,7 @@
 export type EventType = "meeting" | "task" | "reminder" | "personal" | "work";
 export type ReccuringType = "weekly" | "daily" | "monthly";
 export type Priority = "low" | "medium" | "high";
+
 export interface Event {
   id: string;
   type: string;
@@ -13,10 +14,8 @@ export interface Event {
   created_by: string;
   completed?: boolean;
   meetingTime?: string;
-  start_date?: string;
-  end_date?: string;
+  event_date: string;
   event_desc?: string;
-  // Additional category-specific properties
   meetingUrl?: string;
   attendees?: string;
   priority?: string;

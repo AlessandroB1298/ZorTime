@@ -1,7 +1,11 @@
+"use client";
+
+import ComingSoon from "@/app/components/comingSoon";
+
 export default function Page() {
   return (
-    <div>
-      <h1>Journal</h1>
+    <div className="flex flex-col">
+      <ComingSoon />
     </div>
   );
 }

@@ -164,13 +164,17 @@ export function groupEventCategory(events: Event[]): GroupedEvent[] {
   return finalEventGroup;
 }
 
-export function formatEventDate(startTime: string, endTime: string): string {
-  const start = new Date(startTime);
-  const end = new Date(endTime);
-
+export function formatEventDate(
+  eventDate: string,
+  start_time: string,
+  end_time: string,
+): string {
+  const start = new Date(eventDate);
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
+  const start_time_readable = new Date(start_time);
+  const end_time_readable = new Date(end_time);
 
   // Check if it's today
   const isToday = start.toDateString() === today.toDateString();
@@ -187,19 +191,7 @@ export function formatEventDate(startTime: string, endTime: string): string {
         year: "numeric",
       });
 
-  // Format time
-  const startTimeStr = start.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-  const endTimeStr = end.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-
-  return `${dateStr} • ${startTimeStr} - ${endTimeStr}`;
+  return `${dateStr} • ${start_time_readable.toLocaleTimeString()} - ${end_time_readable.toLocaleTimeString()}`;
 }
 
 export function capitalizeString(value: string): string {
@@ -255,4 +247,15 @@ export function convert12HourTo24Hour(time12h: string): string {
   // If seconds are not provided, default to '00'
 
   return `${hour24h}:${minutes}:${seconds}`;
+}
+
+export function parseISOString(date: string): string {
+  const split_date = date.split("T");
+
+  return split_date[0];
+}
+
+export function darkenHexColor(color: string): string {
+  console.log(color);
+  return "";
 }

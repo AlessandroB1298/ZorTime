@@ -21,11 +21,14 @@ import {
   EVENT_TYPE_COLORS,
   capitalizeString,
   convert12HourTo24Hour,
+  parseISOString,
 } from "@/lib/event-utils";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import React, { useState } from "react";
-
+import { useEditUserEvent } from "@/convex/mutations";
+import { Textarea } from "@/components/ui/textarea";
+import { PRIORITYLEVEL, Priority } from "@/lib/types/event";
 type EditEventProps = {
   event: Event;
 };
@@ -33,21 +36,42 @@ type EditEventProps = {
 export default function EditEventForm({ event }: Readonly<EditEventProps>) {
   const [open, setOpen] = useState(false);
 
+  const updateUserEvent = useEditUserEvent();
   const [formData, setFormData] = useState({
-    createdBy: "",
     type: event.type,
     name: event.event_name,
-    startDate: "",
+    eventDate: parseISOString(event.event_date),
     startTime: convert12HourTo24Hour(event.start_time),
-    endDate: "",
     endTime: convert12HourTo24Hour(event.end_time),
     location: event.location,
     isRecurring: event.isRecurring,
     recurringPattern: event.recurringPattern,
+    eventDesc: event.event_desc,
+    priorityLevel: event.priority as "low" | "medium" | "high",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const startDateTime = new Date(
+      `${formData.eventDate}T${formData.startTime}`,
+    );
+    const endDateTime = new Date(`${formData.eventDate}T${formData.endTime}`);
+
+    updateUserEvent.mutate({
+      id: event.id,
+      type: formData.type,
+      event_name: formData.name,
+      event_date: new Date(formData.eventDate).toISOString(),
+      start_time: startDateTime.toISOString(),
+      end_time: endDateTime.toISOString(),
+      location: formData.location,
+      isRecurring: formData.isRecurring,
+      recurring_pattern: formData.recurringPattern,
+      event_desc: formData.eventDesc,
+      priority: formData.priorityLevel,
+    });
+    setOpen(!open);
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -89,13 +113,13 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date</Label>
+              <Label htmlFor="startDate">Date</Label>
               <Input
                 id="startDate"
                 type="date"
-                value={formData.startDate}
+                value={formData.eventDate}
                 onChange={(e) =>
-                  setFormData({ ...formData, startDate: e.target.value })
+                  setFormData({ ...formData, eventDate: e.target.value })
                 }
                 required
               />
@@ -116,18 +140,6 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="endDate">End Date</Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={formData.endDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, endDate: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="endTime">End Time</Label>
               <Input
                 id="endTime"
@@ -141,6 +153,40 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
             </div>
           </div>
 
+          <div className={"space-y-2"}>
+            <h3 className={"flex text-sm opacity-65"}>
+              {capitalizeString(formData.type)} Details
+            </h3>
+          </div>
+          {formData.type === "task" && (
+            <div className="space-y-2">
+              <Label htmlFor="priority">Priority</Label>
+              <Select
+                value={formData.priorityLevel}
+                onValueChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    priorityLevel: value as Priority,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(PRIORITYLEVEL).map(([key, value]) => (
+                    <SelectItem key={key} value={key}>
+                      <div className="flex items-center gap-2">
+                        <div className={`h-3 w-3 rounded-full ${value.bg}`} />
+                        {capitalizeString(value.label)}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="location">Location</Label>
             <Input
@@ -150,6 +196,24 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
                 setFormData({ ...formData, location: e.target.value })
               }
               placeholder="Conference Room A"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="startDate">
+                {capitalizeString(formData.type)} Description
+              </Label>
+            </div>
+            <Textarea
+              value={formData.eventDesc}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  eventDesc: e.target.value,
+                })
+              }
+              placeholder="Enter description of event..."
             />
           </div>
 
@@ -194,7 +258,12 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
             >
               Cancel
             </Button>
-            <Button type="submit">Create Event</Button>
+            <Button
+              type="submit"
+              className={`${EVENT_TYPE_COLORS[event.type].bg} hover:bg-primary hover:cursor-pointer`}
+            >
+              Update {capitalizeString(event.type)}
+            </Button>
           </div>
         </form>
       </DialogContent>

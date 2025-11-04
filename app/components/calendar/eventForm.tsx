@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   EventType,
   PRIORITYLEVEL,
@@ -32,7 +32,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateUserEvent } from "@/convex/queries";
 import { useUser } from "@clerk/nextjs";
 
-export default function EventForm() {
+type eventFormProps = {
+  day?: string;
+};
+
+export default function EventForm({ day }: eventFormProps) {
   const { user, isLoaded } = useUser();
   const addNewUserEvent = useCreateUserEvent();
   const [open, setOpen] = useState<boolean>(false);
@@ -41,43 +45,37 @@ export default function EventForm() {
     createdBy: "",
     type: "meeting" as EventType,
     name: "",
-    startDate: "",
+    eventDate: day?.split("T")[0] || "",
     startTime: "",
-    endDate: "",
     endTime: "",
     location: "",
     isRecurring: false,
     recurringPattern: "weekly" as "daily" | "weekly" | "monthly",
     meetingLink: "",
-    priorityLevel: "" as "low" | "medium" | "high",
+    priorityLevel: "low" as "low" | "medium" | "high",
+    eventDesc: "",
   });
-
-  useEffect(() => {
-    console.log(`Start Time: ${formData.startTime}`);
-    console.log(`End time: ${formData.endTime}`);
-  }, [formData.startTime, formData.endTime]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const startDateTime = new Date(
-      `${formData.startDate}T${formData.startTime}`,
+      `${formData.eventDate}T${formData.startTime}`,
     );
-    const endDateTime = new Date(`${formData.endDate}T${formData.endTime}`);
+    const endDateTime = new Date(`${formData.eventDate}T${formData.endTime}`);
 
-    const startDate = new Date(formData.startDate);
-    const endDate = new Date(formData.endDate);
+    const eventDate = new Date(formData.eventDate);
 
     if (user && isLoaded) {
       const event: Event = {
+        event_desc: formData.eventDesc,
         created_by: user.id,
         id: crypto.randomUUID(),
         type: formData.type,
         event_name: formData.name,
         start_time: startDateTime.toISOString(),
         end_time: endDateTime.toISOString(),
-        start_date: startDate.toISOString(),
-        end_date: endDate.toISOString(),
+        event_date: eventDate.toISOString(),
         location: formData.location,
         isRecurring: formData.isRecurring,
         priority: formData.priorityLevel,
@@ -88,8 +86,8 @@ export default function EventForm() {
       };
 
       addNewUserEvent.mutate({
-        created_by: event.created_by,
         id: event.id,
+        created_by: event.created_by,
         type: event.type,
         event_name: event.event_name,
         start_time: event.start_time,
@@ -100,8 +98,8 @@ export default function EventForm() {
         priority: event.priority,
         meetingUrl: event.meetingUrl,
         meetingTime: event.meetingTime,
-        start_date: event.start_date,
-        end_date: event.end_date,
+        event_date: event.event_date,
+        event_desc: event.event_desc,
       });
     }
 
@@ -112,17 +110,17 @@ export default function EventForm() {
   const resetForm = () => {
     setFormData({
       createdBy: "",
+      eventDesc: "",
       type: "meeting" as EventType,
       name: "",
-      startDate: "",
+      eventDate: day || "",
       startTime: "",
-      endDate: "",
       endTime: "",
       location: "",
       isRecurring: false,
       recurringPattern: "weekly" as "daily" | "weekly" | "monthly",
       meetingLink: "",
-      priorityLevel: "" as "low" | "medium" | "high",
+      priorityLevel: "low" as "low" | "medium" | "high",
     });
   };
 
@@ -192,14 +190,14 @@ export default function EventForm() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="startDate">Start Date</Label>
+                <Label htmlFor="startDate">Date</Label>
               </div>
               <Input
                 id="startDate"
                 type="date"
-                value={formData.startDate}
+                value={formData.eventDate}
                 onChange={(e) =>
-                  setFormData({ ...formData, startDate: e.target.value })
+                  setFormData({ ...formData, eventDate: e.target.value })
                 }
               />
             </div>
@@ -217,20 +215,6 @@ export default function EventForm() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="endDate">End Date</Label>
-              </div>
-              <Input
-                id="endDate"
-                type="date"
-                value={formData.endDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, endDate: e.target.value })
-                }
-                required
-              />
-            </div>
             <div className="space-y-2">
               <Label htmlFor="endTime">End Time</Label>
               <Input
@@ -318,7 +302,16 @@ export default function EventForm() {
                 {capitalizeString(formData.type)} Description
               </Label>
             </div>
-            <Textarea placeholder="Enter description of event..." />
+            <Textarea
+              value={formData.eventDesc}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  eventDesc: e.target.value,
+                })
+              }
+              placeholder="Enter description of event..."
+            />
           </div>
 
           <div className="space-y-3">

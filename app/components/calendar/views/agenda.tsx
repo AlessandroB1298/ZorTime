@@ -10,10 +10,12 @@ import {
 import { Card } from "@/components/ui/card";
 import { MapPin, Clock, Calendar, Repeat, Trash2 } from "lucide-react";
 import EditEventForm from "@/app/components/calendar/EditEvent";
+import { useDeleteUserEvent } from "@/convex/mutations";
 
 export interface AgendaViewProps {
   events: Event[];
   currentDate: Date;
+  userId: string;
 }
 
 type ConvertedEvent = Omit<Event, "start_time" | "end_time"> & {
@@ -21,8 +23,13 @@ type ConvertedEvent = Omit<Event, "start_time" | "end_time"> & {
   end_time: Date;
 };
 
-export function AgendaView({ events, currentDate }: AgendaViewProps) {
+export function AgendaView({
+  events,
+  currentDate,
+  userId,
+}: Readonly<AgendaViewProps>) {
   const rawMonthEvents = getEventsForMonth(events, currentDate);
+  const deleteEvent = useDeleteUserEvent();
 
   const monthEvents: ConvertedEvent[] = rawMonthEvents
     .map((event) => ({
@@ -116,18 +123,27 @@ export function AgendaView({ events, currentDate }: AgendaViewProps) {
                     <div className="flex flex-row items-center gap-2">
                       <EditEventForm
                         event={{
+                          id: event.id,
                           type: event.type,
+                          event_date: event.event_date,
                           created_by: event.created_by,
                           event_name: event.event_name,
                           start_time: event.start_time.toLocaleTimeString(),
                           end_time: event.end_time.toLocaleTimeString(),
-                          id: event.id,
+                          event_desc: event.event_desc,
+                          priority: event.priority,
                           location: event.location,
                           isRecurring: event.isRecurring,
                           recurringPattern: event.recurringPattern,
                         }}
                       />
                       <Trash2
+                        onClick={() => {
+                          deleteEvent.mutate({
+                            id: event.id,
+                            userId: userId,
+                          });
+                        }}
                         className="hover:text-red-600 hover:cursor-pointer"
                         size={25}
                       />
