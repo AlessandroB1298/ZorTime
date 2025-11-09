@@ -1,14 +1,4 @@
 import {
-  Bot,
-  Calendar,
-  Home,
-  Inbox,
-  Notebook,
-  Search,
-  Settings,
-} from "lucide-react";
-
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -21,44 +11,19 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { UserButton } from "@clerk/nextjs";
-
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Journal",
-    url: "#",
-    icon: Notebook,
-  },
-  {
-    title: "Ai Summaries",
-    url: "#",
-    icon: Bot,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
+import { items } from "@/lib/constants/sideNavItems";
+import { Hourglass } from "lucide-react";
 
 export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="dark:text-black font-extrabold text-2xl text-white">
-            Zortime
+          <SidebarGroupLabel className="dark:text-black font-extrabold text-2xl text-white flex-row items-center gap-2">
+            <div>
+              <Hourglass size={20} />
+            </div>
+            <h1>Zortime</h1>
           </SidebarGroupLabel>
           <Separator />
           <SidebarGroupContent>

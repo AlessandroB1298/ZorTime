@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "../components/appSidebar";
 import TopBanner from "../components/topbanner";
+import {ConvexClientProvider} from "@/app/providers/providers";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +12,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SidebarTrigger />
           <TopBanner />
         </div>
-        {children}
+          <ConvexClientProvider>
+              {children}
+          </ConvexClientProvider>
       </main>
     </SidebarProvider>
   );
