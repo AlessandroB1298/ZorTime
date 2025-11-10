@@ -23,12 +23,14 @@ import {
   convert12HourTo24Hour,
   parseISOString,
 } from "@/lib/event-utils";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import React, { useState } from "react";
 import { useEditUserEvent } from "@/convex/mutations";
 import { Textarea } from "@/components/ui/textarea";
 import { PRIORITYLEVEL, Priority } from "@/lib/types/event";
+import EventField from "../eventField";
+import { Separator } from "@/components/ui/separator";
+
 type EditEventProps = {
   event: Event;
 };
@@ -37,39 +39,42 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
   const [open, setOpen] = useState(false);
 
   const updateUserEvent = useEditUserEvent();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Event>({
+    created_by: event.created_by,
     type: event.type,
-    name: event.event_name,
-    eventDate: parseISOString(event.event_date),
-    startTime: convert12HourTo24Hour(event.start_time),
-    endTime: convert12HourTo24Hour(event.end_time),
+    id: event.id,
+    event_name: event.event_name,
+    event_date: parseISOString(event.event_date),
+    start_time: convert12HourTo24Hour(event.start_time),
+    end_time: convert12HourTo24Hour(event.end_time),
     location: event.location,
     isRecurring: event.isRecurring,
     recurringPattern: event.recurringPattern,
-    eventDesc: event.event_desc,
-    priorityLevel: event.priority as "low" | "medium" | "high",
+    event_desc: event.event_desc,
+    priority: event.priority as "low" | "medium" | "high",
+    meetingUrl: event.meetingUrl,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const startDateTime = new Date(
-      `${formData.eventDate}T${formData.startTime}`,
+      `${formData.event_date}T${formData.start_time}`
     );
-    const endDateTime = new Date(`${formData.eventDate}T${formData.endTime}`);
+    const endDateTime = new Date(`${formData.event_date}T${formData.end_time}`);
 
     updateUserEvent.mutate({
       id: event.id,
       type: formData.type,
-      event_name: formData.name,
-      event_date: new Date(formData.eventDate).toISOString(),
+      event_name: formData.event_name,
+      event_date: new Date(formData.event_date).toISOString(),
       start_time: startDateTime.toISOString(),
       end_time: endDateTime.toISOString(),
       location: formData.location,
       isRecurring: formData.isRecurring,
       recurring_pattern: formData.recurringPattern,
-      event_desc: formData.eventDesc,
-      priority: formData.priorityLevel,
+      event_desc: formData.event_desc,
+      priority: formData.priority,
     });
     setOpen(!open);
   };
@@ -98,60 +103,53 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="name">Event Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              placeholder="Team meeting"
-              required
+          <EventField
+            value={formData.event_name}
+            fieldName="Event Name"
+            stateName="event_name"
+            prevFormData={formData}
+            isRequired={true}
+            setFormData={setFormData}
+            placeholder="team meeting"
+          />
+
+          <Separator />
+          <div className={"space-y-2"}>
+            <h3 className={"flex text-sm opacity-65"}>Date and Time</h3>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <EventField
+              value={formData.event_date}
+              fieldName="Date"
+              setFormData={setFormData}
+              prevFormData={formData}
+              isRequired={true}
+              type="date"
+              stateName="event_date"
+            />
+            <EventField
+              value={formData.start_time}
+              fieldName="Start Time"
+              setFormData={setFormData}
+              prevFormData={formData}
+              isRequired={true}
+              type="time"
+              stateName="start_time"
             />
           </div>
-
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="startDate">Date</Label>
-              <Input
-                id="startDate"
-                type="date"
-                value={formData.eventDate}
-                onChange={(e) =>
-                  setFormData({ ...formData, eventDate: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="startTime">Start Time</Label>
-              <Input
-                id="startTime"
-                type="time"
-                value={formData.startTime}
-                onChange={(e) =>
-                  setFormData({ ...formData, startTime: e.target.value })
-                }
-                required
-              />
-            </div>
+            <EventField
+              value={formData.end_time}
+              fieldName="End Time"
+              setFormData={setFormData}
+              prevFormData={formData}
+              isRequired={true}
+              type="time"
+              stateName="end_time"
+            />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="endTime">End Time</Label>
-              <Input
-                id="endTime"
-                type="time"
-                value={formData.endTime}
-                onChange={(e) =>
-                  setFormData({ ...formData, endTime: e.target.value })
-                }
-                required
-              />
-            </div>
-          </div>
+          <Separator />
 
           <div className={"space-y-2"}>
             <h3 className={"flex text-sm opacity-65"}>
@@ -162,11 +160,11 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
             <div className="space-y-2">
               <Label htmlFor="priority">Priority</Label>
               <Select
-                value={formData.priorityLevel}
+                value={formData.priority}
                 onValueChange={(value) =>
                   setFormData({
                     ...formData,
-                    priorityLevel: value as Priority,
+                    priority: value as Priority,
                   })
                 }
               >
@@ -187,35 +185,25 @@ export default function EditEventForm({ event }: Readonly<EditEventProps>) {
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
-            <Input
-              id="location"
-              value={formData.location}
-              onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
-              }
-              placeholder="Conference Room A"
-            />
-          </div>
+          <EventField
+            value={formData.location}
+            fieldName="Location"
+            stateName={"location"}
+            prevFormData={formData}
+            isRequired={false}
+            setFormData={setFormData}
+            placeholder="Conference Room A"
+          />
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="startDate">
-                {capitalizeString(formData.type)} Description
-              </Label>
-            </div>
-            <Textarea
-              value={formData.eventDesc}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  eventDesc: e.target.value,
-                })
-              }
-              placeholder="Enter description of event..."
-            />
-          </div>
+          <EventField
+            value={formData.event_desc}
+            fieldName={capitalizeString(formData.type) + " Description"}
+            setFormData={setFormData}
+            prevFormData={formData}
+            stateName={"event_desc"}
+            placeholder="Enter description of event..."
+            AlternativeComponent={Textarea}
+          />
 
           <div className="space-y-3">
             <div className="flex items-center gap-2">
