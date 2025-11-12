@@ -16,7 +16,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { AgendaView } from "@/app/components/calendar/views/agenda";
-import EventForm from "../eventForm";
+import FinalEventForm from "../finalEventForm";
 interface MonthViewProps {
   events: Event[];
   currentDate: Date;
@@ -93,7 +93,7 @@ export function MonthView({
                   }
                 >
                   {formatDate(day)}
-                  <EventForm day={day.toISOString()} />
+                  <FinalEventForm userId={userId} day={day.toISOString()} />
                 </DialogTitle>
                 <DialogDescription>
                   Here are all the events for today
