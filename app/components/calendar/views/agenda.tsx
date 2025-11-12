@@ -9,8 +9,8 @@ import {
 } from "@/lib/event-utils";
 import { Card } from "@/components/ui/card";
 import { MapPin, Clock, Calendar, Repeat, Trash2 } from "lucide-react";
-import EditEventForm from "@/app/components/calendar/EditEvent";
 import { useDeleteUserEvent } from "@/convex/mutations";
+import FinalEventForm from "../finalEventForm";
 
 export interface AgendaViewProps {
   events: Event[];
@@ -57,7 +57,7 @@ export function AgendaView({
       acc[dateKey].push(event);
       return acc;
     },
-    {} as Record<string, ConvertedEvent[]>,
+    {} as Record<string, ConvertedEvent[]>
   );
 
   return (
@@ -121,22 +121,7 @@ export function AgendaView({
                       </div>
                     </div>
                     <div className="flex flex-row items-center gap-2">
-                      <EditEventForm
-                        event={{
-                          id: event.id,
-                          type: event.type,
-                          event_date: event.event_date,
-                          created_by: event.created_by,
-                          event_name: event.event_name,
-                          start_time: event.start_time.toLocaleTimeString(),
-                          end_time: event.end_time.toLocaleTimeString(),
-                          event_desc: event.event_desc,
-                          priority: event.priority,
-                          location: event.location,
-                          isRecurring: event.isRecurring,
-                          recurringPattern: event.recurringPattern,
-                        }}
-                      />
+                      <FinalEventForm userId={userId} id={event.id} editMode />
                       <Trash2
                         onClick={() => {
                           deleteEvent.mutate({

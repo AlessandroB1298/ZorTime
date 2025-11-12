@@ -158,7 +158,7 @@ export function groupEventCategory(events: Event[]): GroupedEvent[] {
       return {
         ...group,
       };
-    },
+    }
   );
 
   return finalEventGroup;
@@ -167,7 +167,7 @@ export function groupEventCategory(events: Event[]): GroupedEvent[] {
 export function formatEventDate(
   eventDate: string,
   start_time: string,
-  end_time: string,
+  end_time: string
 ): string {
   const start = new Date(eventDate);
   const today = new Date();
@@ -186,10 +186,10 @@ export function formatEventDate(
     : isTomorrow
       ? "Tomorrow"
       : start.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
 
   return `${dateStr} • ${start_time_readable.toLocaleTimeString()} - ${end_time_readable.toLocaleTimeString()}`;
 }
@@ -230,8 +230,11 @@ export function convert24HourTo12Hour(time24h: string): string {
 }
 
 export function convert12HourTo24Hour(time12h: string): string {
-  const [timePart, ampmPart] = time12h.split(" ");
-  const [hours, minutes, seconds] = timePart.split(":");
+  const result = formatTime(new Date(time12h));
+
+  const [timePart, ampmPart] = result.split(" ");
+
+  const [hours, minutes] = timePart.split(":");
 
   let hourNum = parseInt(hours, 10);
 
@@ -246,16 +249,11 @@ export function convert12HourTo24Hour(time12h: string): string {
 
   // If seconds are not provided, default to '00'
 
-  return `${hour24h}:${minutes}:${seconds}`;
+  return `${hour24h}:${minutes}`;
 }
 
 export function parseISOString(date: string): string {
   const split_date = date.split("T");
 
   return split_date[0];
-}
-
-export function darkenHexColor(color: string): string {
-  console.log(color);
-  return "";
 }

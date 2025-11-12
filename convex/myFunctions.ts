@@ -107,3 +107,21 @@ export const updateUserEvent = mutation({
     }
   },
 });
+
+export const getUserEvent = query({
+  args: {
+    userId: v.string(),
+    id: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const event = await ctx.db
+      .query("user_events")
+      .filter((q) => q.eq(q.field("id"), args.id))
+      .unique();
+    if (event && event.created_by === args.userId) {
+      return event;
+    } else {
+      return null;
+    }
+  },
+});

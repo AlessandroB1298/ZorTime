@@ -10,7 +10,14 @@ export function useCreateUserEvent() {
 
 export function useGetUserEvents(userId: string) {
   const { data, isLoading, error, isError } = useQuery(
-    convexQuery(api.myFunctions.getUserEvents, { userId }),
+    convexQuery(api.myFunctions.getUserEvents, { userId })
+  );
+  return { data, isLoading, isError, error };
+}
+
+export function useGetUserEvent(userId: string, id: string | undefined) {
+  const { data, isLoading, error, isError } = useQuery(
+    convexQuery(api.myFunctions.getUserEvent, { userId, id })
   );
   return { data, isLoading, isError, error };
 }
