@@ -1,6 +1,50 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { Event } from "@/lib/types/event";
+import { Event, Course } from "@/lib/types/event";
+
+export const createCourse = mutation({
+  args: {
+    created_by: v.string(),
+    id: v.string(),
+    course_color: v.string(),
+    course_name: v.string(),
+    prof: v.string(),
+    course_code: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return ctx.db.insert("user_courses", {
+      created_by: args.created_by,
+      id: args.id,
+      course_color: args.course_color,
+      course_name: args.course_name,
+      prof: args.prof,
+      course_code: args.course_code,
+    });
+  },
+});
+
+export const createAssignment = mutation({
+  args: {
+    created_by: v.string(),
+    id: v.string(),
+    assignment_name: v.string(),
+    assginment_due_date: v.string(),
+    course: v.string(),
+    notes: v.string(),
+    priority: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return ctx.db.insert("user_assignments", {
+      created_by: args.created_by,
+      id: args.id,
+      assignment_name: args.assignment_name,
+      assginment_due_date: args.assginment_due_date,
+      course: args.course,
+      notes: args.notes,
+      priority: args.priority,
+    });
+  },
+});
 
 export const createEvent = mutation({
   args: {
@@ -18,6 +62,17 @@ export const createEvent = mutation({
     event_desc: v.optional(v.string()),
     meetingUrl: v.optional(v.string()),
     priority: v.optional(v.string()),
+    schoolDetails: v.optional(
+      v.object({
+        schoolSubType: v.string(),
+        course: v.string(),
+
+        assignmentDetails: v.object({
+          assginmentDueDate: v.string(),
+          assignmentName: v.string(),
+        }),
+      }),
+    ),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("user_events", {
@@ -35,7 +90,20 @@ export const createEvent = mutation({
       event_date: args.event_date,
       event_desc: args.event_desc,
       priority: args.priority,
+      schoolDetails: args.schoolDetails,
     });
+  },
+});
+
+export const getUserCourses = query({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args): Promise<Course[]> => {
+    return await ctx.db
+      .query("user_courses")
+      .filter((q) => q.eq(q.field("created_by"), args.userId))
+      .collect();
   },
 });
 
@@ -83,6 +151,17 @@ export const updateUserEvent = mutation({
     event_desc: v.optional(v.string()),
     meetingUrl: v.optional(v.string()),
     priority: v.optional(v.string()),
+    schoolDetails: v.optional(
+      v.object({
+        schoolSubType: v.string(),
+        course: v.string(),
+
+        assignmentDetails: v.object({
+          assginmentDueDate: v.string(),
+          assignmentName: v.string(),
+        }),
+      }),
+    ),
   },
   handler: async (ctx, args) => {
     const event = await ctx.db
@@ -103,6 +182,7 @@ export const updateUserEvent = mutation({
         event_desc: args.event_desc,
         meetingUrl: args.meetingUrl,
         priority: args.priority,
+        schoolDetails: args.schoolDetails,
       });
     }
   },

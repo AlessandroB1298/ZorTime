@@ -6,8 +6,8 @@ import { Event } from "@/lib/types/event";
 type eventFieldProps = {
   value: string | undefined;
   fieldName: string;
-  setFormData: (value: React.SetStateAction<Event>) => void;
-  prevFormData: Event;
+  setFormData: (value: React.SetStateAction<any>) => void;
+  prevFormData: any ;
   isRequired?: boolean;
   stateName: string;
   placeholder?: string;

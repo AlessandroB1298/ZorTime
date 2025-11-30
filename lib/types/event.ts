@@ -1,10 +1,32 @@
-export type EventType = "meeting" | "task" | "reminder" | "personal" | "work";
+export type EventType =
+  | "meeting"
+  | "task"
+  | "reminder"
+  | "personal"
+  | "work"
+  | "school";
 export type ReccuringType = "weekly" | "daily" | "monthly";
 export type Priority = "low" | "medium" | "high";
+export type GeneralEventType =
+  | "work"
+  | "personal"
+  | "reminder"
+  | "task"
+  | "meeting";
+export type SchoolSubtype = "meeting" | "assignment" | "exam";
+
+export interface Course {
+  course_name: string;
+  prof: string;
+  course_color: string;
+  id: string;
+  course_code: string;
+  created_by: string;
+}
 
 export interface Event {
   id: string;
-  type: string;
+  type: GeneralEventType | "school";
   event_name: string;
   start_time: string;
   end_time: string;
@@ -20,6 +42,16 @@ export interface Event {
   attendees?: string;
   priority?: string;
   reminderTime?: string;
+
+  schoolDetails?: {
+    schoolSubType: SchoolSubtype;
+    course: string;
+
+    assignmentDetails?: {
+      assignmentDueDate: string;
+      assignmentName: string;
+    };
+  };
 }
 
 export interface GroupedEvent {

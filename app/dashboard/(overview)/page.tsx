@@ -15,9 +15,9 @@ export default function Page() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className={"text-2xl font-extrabold"}>
+          <h1 className={"text-2xl font-extrabold "}>
             {user.firstName}
-            {"'s"} Schedule
+            {"'s"} Dashboard
           </h1>
         </div>
         <div className="mt-6">

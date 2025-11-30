@@ -1,4 +1,11 @@
-import { Calendar, Home, LucideProps, Notebook, Settings } from "lucide-react";
+import {
+  Calendar,
+  GraduationCap,
+  Home,
+  LucideProps,
+  Notebook,
+  Settings,
+} from "lucide-react";
 
 export type sideNavItem = {
   title: string;
@@ -21,6 +28,11 @@ export const items: sideNavItem[] = [
     icon: Calendar,
   },
   {
+    title: "School",
+    url: "/dashboard/school",
+    icon: GraduationCap,
+  },
+  {
     title: "Journal",
     url: "/dashboard/journal",
     icon: Notebook,
@@ -28,7 +40,7 @@ export const items: sideNavItem[] = [
 
   {
     title: "Settings",
-    url: "#",
+    url: "/dashboard/settings",
     icon: Settings,
   },
 ];

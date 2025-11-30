@@ -6,6 +6,7 @@ import {
   getMonthDays,
   getEventsForDay,
   formatDate,
+  getEventName,
 } from "@/lib/event-utils";
 import { Card } from "@/components/ui/card";
 import {
@@ -17,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { AgendaView } from "@/app/components/calendar/views/agenda";
 import FinalEventForm from "../finalEventForm";
+
 interface MonthViewProps {
   events: Event[];
   currentDate: Date;
@@ -28,6 +30,7 @@ export function MonthView({
   currentDate,
   userId,
 }: Readonly<MonthViewProps>) {
+
   const monthDays = getMonthDays(new Date(currentDate));
   const today = new Date();
   const currentMonth = currentDate.getMonth();
@@ -74,7 +77,7 @@ export function MonthView({
                           key={event.id}
                           className={`text-[10px] rounded px-1 py-0.5 truncate ${colors.bg} ${colors.text}`}
                         >
-                          {event.event_name}
+                          {getEventName(event)}
                         </div>
                       );
                     })}
