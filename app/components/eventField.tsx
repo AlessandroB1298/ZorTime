@@ -1,13 +1,14 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Event } from "@/lib/types/event";
+
 
 type eventFieldProps = {
   value: string | undefined;
   fieldName: string;
-  setFormData: (value: React.SetStateAction<Event>) => void;
-  prevFormData: Event;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setFormData: (value: React.SetStateAction<any>) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prevFormData: any ;
   isRequired?: boolean;
   stateName: string;
   placeholder?: string;

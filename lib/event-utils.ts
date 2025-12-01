@@ -1,5 +1,10 @@
 import type { Event, GroupedEvent } from "./types/event";
 
+export type ConvertedEvent = Omit<Event, "start_time" | "end_time"> & {
+  start_time: Date;
+  end_time: Date;
+};
+
 export const EVENT_TYPE_COLORS: Record<
   string,
   { bg: string; text: string; label: string }
@@ -29,8 +34,55 @@ export const EVENT_TYPE_COLORS: Record<
     text: "text-[var(--event-work-foreground)]",
     label: "Work",
   },
+  school: {
+    bg: "bg-[var(--event-assignment)]",
+    text: "text-[var(--event-work-foreground)]",
+    label: "School",
+  },
 };
 
+export const SCHOOL_SUB_TYPES: Record<
+  string,
+  { bg: string; text: string; label: string }
+> = {
+  assignment: {
+    bg: "bg-[var(--event-meeting)]",
+    text: "text-[var(--event-meeting-foreground)]",
+    label: "assignment",
+  },
+  meeting: {
+    bg: "bg-[var(--event-task)]",
+    text: "text-[var(--event-task-foreground)]",
+    label: "meeting",
+  },
+  exam: {
+    bg: "bg-[var(--event-reminder)]",
+    text: "text-[var(--event-reminder-foreground)]",
+    label: "exam",
+  },
+};
+
+export const formattedDate = (event_date: string, time: string): Date => {
+  return new Date(`${event_date}T${time}`);
+};
+
+export function updatedFormatTime(event: ConvertedEvent): string {
+  if (event.type != "school") {
+    return `${event.start_time.toLocaleTimeString()} - ${event.end_time.toLocaleTimeString()}`;
+  } else {
+    switch (event.schoolDetails?.schoolSubType) {
+      case "assignment":
+        if (event.schoolDetails.assignmentDetails) {
+          const obj = Object.values(event.schoolDetails.assignmentDetails);
+          const assignmentDate = new Date(obj[0]);
+          const date = assignmentDate.toLocaleDateString();
+          const time = assignmentDate.toLocaleTimeString();
+          return `${date}-${time}`;
+        }
+    }
+  }
+  return "";
+}
 export function formatTime(date: Date): string {
   return date.toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -56,8 +108,11 @@ export function formatDateShort(date: Date): string {
 
 export function isSameDay(date1: Date, date2: Date): boolean {
   return (
+    // 1. Compare UTC Year
     date1.getFullYear() === date2.getFullYear() &&
+    // 2. Compare UTC Month
     date1.getMonth() === date2.getMonth() &&
+    // 3. Compare UTC Day of the Month
     date1.getDate() === date2.getDate()
   );
 }
@@ -107,8 +162,42 @@ export function getMonthDays(date: Date): Date[] {
   return days;
 }
 
+export function getEventName(event: Event | ConvertedEvent): string {
+  if (event.type == "school") {
+    switch (event.schoolDetails?.schoolSubType) {
+      case "assignment":
+        if (event.schoolDetails.assignmentDetails) {
+          const obj = Object.values(event.schoolDetails.assignmentDetails);
+          return obj[1];
+        }
+    }
+  }
+  return event.event_name;
+}
+
+export function correctedUTCDate(dateString: string): Date {
+  const dateArray = dateString.split("-");
+  const year = dateArray[0];
+  const month = parseInt(dateArray[1], 10) - 1;
+  const date = dateArray[2];
+
+  return new Date(parseInt(year), month, parseInt(date));
+}
 export function getEventsForDay(events: Event[], date: Date): Event[] {
-  return events.filter((event) => isSameDay(new Date(event.start_time), date));
+  return events.filter((event) => {
+    if (event.type == "school") {
+      switch (event.schoolDetails?.schoolSubType) {
+        case "assignment":
+          if (event.schoolDetails.assignmentDetails) {
+            const obj = Object.values(event.schoolDetails.assignmentDetails);
+            const assignmentDate = obj[0];
+            return isSameDay(new Date(assignmentDate), date);
+          }
+      }
+    }
+    const eventDate = correctedUTCDate(event.event_date);
+    return isSameDay(eventDate, date);
+  });
 }
 
 export function getEventsForWeek(events: Event[], date: Date): Event[] {
@@ -127,7 +216,20 @@ export function getEventsForMonth(events: Event[], date: Date): Event[] {
   const month = date.getMonth();
 
   return events.filter((event) => {
-    const eventDate = new Date(event.start_time);
+    if (event.type == "school") {
+      switch (event.schoolDetails?.schoolSubType) {
+        case "assignment":
+          if (event.schoolDetails.assignmentDetails) {
+            const obj = Object.values(event.schoolDetails.assignmentDetails);
+            const assignmentDate = new Date(obj[0]);
+            return (
+              assignmentDate.getFullYear() === year &&
+              assignmentDate.getMonth() === month
+            );
+          }
+      }
+    }
+    const eventDate = new Date(event.event_date);
     return eventDate.getFullYear() === year && eventDate.getMonth() === month;
   });
 }
@@ -158,7 +260,7 @@ export function groupEventCategory(events: Event[]): GroupedEvent[] {
       return {
         ...group,
       };
-    }
+    },
   );
 
   return finalEventGroup;
@@ -167,7 +269,7 @@ export function groupEventCategory(events: Event[]): GroupedEvent[] {
 export function formatEventDate(
   eventDate: string,
   start_time: string,
-  end_time: string
+  end_time: string,
 ): string {
   const start = new Date(eventDate);
   const today = new Date();
@@ -194,10 +296,13 @@ export function formatEventDate(
   return `${dateStr} • ${start_time_readable.toLocaleTimeString()} - ${end_time_readable.toLocaleTimeString()}`;
 }
 
-export function capitalizeString(value: string): string {
-  const firstLetter = value.charAt(0).toUpperCase();
-  const remainderString = value.substring(1, value.length);
-  return firstLetter + remainderString;
+export function capitalizeString(value: string | undefined): string {
+  if (value) {
+    const firstLetter = value.charAt(0).toUpperCase();
+    const remainderString = value.substring(1, value.length);
+    return firstLetter + remainderString;
+  }
+  return "";
 }
 
 export function convert24HourTo12Hour(time24h: string): string {

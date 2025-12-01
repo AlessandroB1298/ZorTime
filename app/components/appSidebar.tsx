@@ -19,7 +19,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="dark:text-black font-extrabold text-2xl text-white flex-row items-center gap-2">
+          <SidebarGroupLabel className=" dark:text-black font-extrabold text-2xl text-white flex-row items-center gap-2">
             <div>
               <Hourglass size={20} />
             </div>
@@ -31,7 +31,7 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    className="dark:text-black text-white font-bold"
+                    className=" dark:text-black text-white font-bold"
                     asChild
                   >
                     <a href={item.url}>

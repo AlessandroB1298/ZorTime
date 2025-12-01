@@ -3,25 +3,21 @@
 import { PRIORITYLEVEL, type Event } from "@/lib/types/event";
 import {
   EVENT_TYPE_COLORS,
-  formatTime,
-  formatDate,
   getEventsForMonth,
+  getEventName,
+  updatedFormatTime,
 } from "@/lib/event-utils";
 import { Card } from "@/components/ui/card";
 import { MapPin, Clock, Calendar, Repeat, Trash2 } from "lucide-react";
 import { useDeleteUserEvent } from "@/convex/mutations";
 import FinalEventForm from "../finalEventForm";
+import { ConvertedEvent } from "@/lib/event-utils";
 
 export interface AgendaViewProps {
   events: Event[];
   currentDate: Date;
   userId: string;
 }
-
-type ConvertedEvent = Omit<Event, "start_time" | "end_time"> & {
-  start_time: Date;
-  end_time: Date;
-};
 
 export function AgendaView({
   events,
@@ -31,13 +27,15 @@ export function AgendaView({
   const rawMonthEvents = getEventsForMonth(events, currentDate);
   const deleteEvent = useDeleteUserEvent();
 
+
   const monthEvents: ConvertedEvent[] = rawMonthEvents
     .map((event) => ({
       ...event,
-      start_time: new Date(event.start_time),
-      end_time: new Date(event.end_time),
+      start_time: new Date(`${event.event_date}T${event.start_time}`),
+      end_time: new Date(`${event.event_date}T${event.end_time}`),
     }))
     .sort((a, b) => a.start_time.getTime() - b.start_time.getTime());
+
 
   if (monthEvents.length === 0) {
     return (
@@ -50,7 +48,24 @@ export function AgendaView({
   // Group events by date
   const groupedEvents = monthEvents.reduce(
     (acc, event) => {
-      const dateKey = event.start_time.toDateString();
+      let dateKey = "";
+      if(event.type != "school"){
+        const dateParts = event.event_date.split("T")[0].split("-")
+        const year : number = dateParts[0] as unknown as number;
+        const month = parseInt(dateParts[1], 10) - 1;
+        const date : number = dateParts[2] as unknown as number;
+
+        dateKey = new Date(year, month, date).toDateString();
+      }else if(event.schoolDetails){
+        switch(event.schoolDetails.schoolSubType){
+          case "assignment":
+            if(event.schoolDetails.assignmentDetails){
+              const obj = Object.values(event.schoolDetails.assignmentDetails);
+              const assignmentDate =obj[0];
+              dateKey = assignmentDate;
+            }
+        }
+      }
       if (!acc[dateKey]) {
         acc[dateKey] = [];
       }
@@ -60,6 +75,7 @@ export function AgendaView({
     {} as Record<string, ConvertedEvent[]>
   );
 
+
   return (
     <Card className="overflow-hidden border dark:border-white border-muted">
       <div className="divide-y divide-border">
@@ -67,7 +83,7 @@ export function AgendaView({
           <div key={dateKey} className="p-4">
             <div className="flex items-center gap-2 mb-3">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <h3 className="font-semibold">{formatDate(new Date(dateKey))}</h3>
+              <h3 className="font-semibold">{new Date(dateKey).toDateString()}</h3>
             </div>
             <div className="space-y-3 ml-6">
               {dayEvents.map((event) => {
@@ -103,13 +119,12 @@ export function AgendaView({
                         )}
                       </div>
 
-                      <h4 className="font-semibold mb-2">{event.event_name}</h4>
+                      <h4 className="font-semibold mb-2">{getEventName(event)}</h4>
                       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5" />
                           <span>
-                            {formatTime(event.start_time)} -{" "}
-                            {formatTime(event.end_time)}
+                           {updatedFormatTime(event)}
                           </span>
                         </div>
                         {event.location && (

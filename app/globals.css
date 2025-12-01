@@ -60,9 +60,10 @@
   --event-task-foreground: oklch(0.98 0 0);
   --event-reminder: oklch(0.75 0.15 60);
   --event-reminder-foreground: oklch(0.15 0 0);
-  --event-personal: oklch(0.68 0.22 330);
+  --event-personal: oklch(0.3912 0.2146 273.18);
   --event-personal-foreground: oklch(0.98 0 0);
-  --event-work: oklch(0.55 0.18 220);
+  --event-work: oklch(0.7 0.2245 13.76);
+  --event-assignment: oklch(0.5512 0.2442 29.65);
   --event-work-foreground: oklch(0.98 0 0);
 }
 

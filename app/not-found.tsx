@@ -9,8 +9,8 @@ export default function NotFound() {
       <p>Looks like you have strayed away from the path...</p>
       <div className="flex flex-row items-center gap-3">
         <h2 className="text-3xl">Return Home</h2>
-        <Link href={"/"}>
-          <MoveRight size={100} />
+        <Link href={"/dashboard/"}>
+          <MoveRight size={64} />
         </Link>
       </div>
     </div>

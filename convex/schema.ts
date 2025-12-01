@@ -11,6 +11,29 @@ export const userSchema = {
   }).index("byClerkUserId", ["clerkUserId"]),
 };
 
+export const assignmentSchema = {
+  user_assignments: defineTable({
+    created_by: v.string(),
+    id: v.string(),
+    assignment_name: v.string(),
+    assginment_due_date: v.string(),
+    course: v.string(),
+    notes: v.string(),
+    priority: v.string(),
+  }),
+};
+
+export const courseSchema = {
+  user_courses: defineTable({
+    created_by: v.string(),
+    id: v.string(),
+    course_color: v.string(),
+    course_name: v.string(),
+    prof: v.string(),
+    course_code: v.string(),
+  }),
+};
+
 export const eventSchema = {
   user_events: defineTable({
     created_by: v.string(),
@@ -27,10 +50,23 @@ export const eventSchema = {
     meetingUrl: v.optional(v.string()),
     priority: v.optional(v.string()),
     recurring_pattern: v.optional(v.string()),
+    schoolDetails: v.optional(
+      v.object({
+        schoolSubType: v.string(),
+        course: v.string(),
+
+        assignmentDetails: v.object({
+          assginmentDueDate: v.string(),
+          assignmentName: v.string(),
+        }),
+      }),
+    ),
   }).index("byStartTime", ["start_time"]),
 };
 
 export default defineSchema({
   ...userSchema,
   ...eventSchema,
+  ...courseSchema,
+  ...assignmentSchema,
 });
