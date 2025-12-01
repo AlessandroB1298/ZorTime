@@ -1,7 +1,5 @@
 "use client";
-import { Course } from "@/lib/types/event";
 import CoursesContainer from "@/app/components/school/coursesContainer";
-import { useUser } from '@clerk/nextjs'
 import { useGetUserCourses } from "@/convex/queries";
 import { Loader2 } from "lucide-react";
 

@@ -19,8 +19,6 @@ export interface AgendaViewProps {
   userId: string;
 }
 
-
-
 export function AgendaView({
   events,
   currentDate,
@@ -33,8 +31,8 @@ export function AgendaView({
   const monthEvents: ConvertedEvent[] = rawMonthEvents
     .map((event) => ({
       ...event,
-      start_time: new Date(event.start_time),
-      end_time: new Date(event.end_time),
+      start_time: new Date(`${event.event_date}T${event.start_time}`),
+      end_time: new Date(`${event.event_date}T${event.end_time}`),
     }))
     .sort((a, b) => a.start_time.getTime() - b.start_time.getTime());
 
@@ -53,9 +51,9 @@ export function AgendaView({
       let dateKey = "";
       if(event.type != "school"){
         const dateParts = event.event_date.split("T")[0].split("-")
-        const year = dateParts[0];
+        const year : number = dateParts[0] as unknown as number;
         const month = parseInt(dateParts[1], 10) - 1;
-        const date = dateParts[2];
+        const date : number = dateParts[2] as unknown as number;
 
         dateKey = new Date(year, month, date).toDateString();
       }else if(event.schoolDetails){

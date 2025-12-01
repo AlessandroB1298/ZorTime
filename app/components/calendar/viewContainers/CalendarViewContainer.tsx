@@ -2,7 +2,6 @@ import { useGetUserEvents } from "@/convex/queries";
 import { Loader2 } from "lucide-react";
 import { MonthView } from "@/app/components/calendar/views/monthView";
 import { ViewType } from "@/lib/types/view";
-import { useEffect } from "react";
 
 export default function CalendarViewContainer({
   userId,

@@ -68,17 +68,7 @@ export const formattedDate = (event_date: string, time: string): Date => {
 
 export function updatedFormatTime(event: ConvertedEvent): string {
   if (event.type != "school") {
-    const start_time = event.start_time.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-    const end_time = event.end_time.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-    return start_time + "-" + " " + end_time;
+    return `${event.start_time.toLocaleTimeString()} - ${event.end_time.toLocaleTimeString()}`;
   } else {
     switch (event.schoolDetails?.schoolSubType) {
       case "assignment":
@@ -173,12 +163,14 @@ export function getMonthDays(date: Date): Date[] {
 }
 
 export function getEventName(event: Event | ConvertedEvent): string {
-  switch (event.schoolDetails?.schoolSubType) {
-    case "assignment":
-      if (event.schoolDetails.assignmentDetails) {
-        const obj = Object.values(event.schoolDetails.assignmentDetails);
-        return obj[1];
-      }
+  if (event.type == "school") {
+    switch (event.schoolDetails?.schoolSubType) {
+      case "assignment":
+        if (event.schoolDetails.assignmentDetails) {
+          const obj = Object.values(event.schoolDetails.assignmentDetails);
+          return obj[1];
+        }
+    }
   }
   return event.event_name;
 }
@@ -204,7 +196,6 @@ export function getEventsForDay(events: Event[], date: Date): Event[] {
       }
     }
     const eventDate = correctedUTCDate(event.event_date);
-
     return isSameDay(eventDate, date);
   });
 }

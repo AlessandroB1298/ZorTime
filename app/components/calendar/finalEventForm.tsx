@@ -7,8 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEditUserEvent } from "@/convex/mutations";
-import { useCreateUserEvent, useGetUserEvent } from "@/convex/queries";
+import {  useGetUserEvent } from "@/convex/queries";
 import {
   capitalizeString,
   convert12HourTo24Hour,
@@ -16,13 +15,11 @@ import {
 } from "@/lib/event-utils";
 import {
   Event,
-  EventType,
 } from "@/lib/types/event";
 import { Separator } from "@radix-ui/react-separator";
 import { Loader2, Pencil, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { useGetUserCourses } from "@/convex/queries";
 import EventOnType from "./eventOnType";
 import { GeneralEventType , SchoolSubtype} from "@/lib/types/event";
 type eventFormProps = {
@@ -42,7 +39,6 @@ export default function FinalEventForm({
   //fetch event via event id
   const { data, isLoading, isError, error } = useGetUserEvent(userId, id);
 
-  const{data : courses, isLoading : loading, isError: gotError, error: error_} = useGetUserCourses(userId)
 
   const defaultEvent: Event = {
     id: "",
@@ -84,8 +80,9 @@ export default function FinalEventForm({
 
         // Use the fetched data for all complex conversions
         event_date: parseISOString(data.event_date),
-        start_time: convert12HourTo24Hour(data.start_time),
-        end_time: convert12HourTo24Hour(data.end_time),
+        start_time: data.start_time,
+        end_time: data.end_time,
+
 
         // Map the remaining simple fields
         location: data.location || "",
@@ -174,7 +171,6 @@ export default function FinalEventForm({
         <EventOnType
           event={formData}
           editMode={editMode}
-          courses={courses}
           setOpen={setOpen}
           userId={userId}
           day={day}

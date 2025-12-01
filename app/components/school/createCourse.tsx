@@ -10,27 +10,27 @@ import { Label } from "@/components/ui/label";
 import { useCreateCourse } from "@/convex/mutations";
 
 type CreateCourseProps={
-  courses : Course[];
   user_id : string
 }
 
-export default function CreateCourse({courses, user_id}: CreateCourseProps){
+export default function CreateCourse({user_id}: CreateCourseProps){
   const courseCreate = useCreateCourse();
   const [course, setCourse] = useState<Course>({
-    courseCode : "",
-    courseColor : "",
-    courseName : "",
+    course_code : "",
+    course_color : "",
+    course_name : "",
     prof : "",
     id : "",
     created_by : ""
   })
 
   const handleSubmit=(e: React.FormEvent)=>{
+      e.preventDefault();
       // use mutate function to create course
       const courseData : Course = {
-        courseCode : course.courseCode,
-        courseColor : course.courseColor,
-        courseName : course.courseName,
+        course_code : course.course_code,
+        course_color : course.course_color,
+        course_name : course.course_name,
         prof : course.prof,
         id: crypto.randomUUID(),
         created_by : user_id
@@ -39,9 +39,9 @@ export default function CreateCourse({courses, user_id}: CreateCourseProps){
         courseCreate.mutate({
           created_by : courseData.created_by,
           id : courseData.id,
-          course_name : courseData.courseName,
-          course_code : courseData.courseCode,
-          course_color : courseData.courseColor,
+          course_name : courseData.course_name,
+          course_code : courseData.course_code,
+          course_color : courseData.course_color,
           prof : courseData.prof,
         })
       }
@@ -60,7 +60,7 @@ export default function CreateCourse({courses, user_id}: CreateCourseProps){
           <DialogContent className=" max-w-2xl  bg-background focus-primary">
             <DialogHeader>
               <div className="flex flex-row gap-2 ">
-                <div className={`rounded-full h-4 w-4 `} style={{backgroundColor: course.courseColor}}></div>
+                <div className={`rounded-full h-4 w-4 `} style={{backgroundColor: course.course_color}}></div>
                 <DialogTitle>
                   Add New Course
                 </DialogTitle>
@@ -72,7 +72,7 @@ export default function CreateCourse({courses, user_id}: CreateCourseProps){
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-8">
               <EventField
-                value={course.courseCode}
+                value={course.course_code}
                 prevFormData={course}
                 fieldName="Course Code"
                 stateName = {"courseCode"}
@@ -82,7 +82,7 @@ export default function CreateCourse({courses, user_id}: CreateCourseProps){
               />
 
               <EventField
-                value={course.courseName}
+                value={course.course_name}
                 prevFormData={course}
                 fieldName="Course Name"
                 stateName = {"courseName"}
@@ -105,9 +105,9 @@ export default function CreateCourse({courses, user_id}: CreateCourseProps){
              <div className="space-y-2">
                <Label>Course Color</Label>
               <SliderPicker
-              color={course.courseColor}
+              color={course.course_color}
               onChange={(e)=>{
-                (setCourse({...course, courseColor: e.hex})
+                (setCourse({...course, course_color: e.hex})
                 )}}
               />
              </div>

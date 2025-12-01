@@ -1,12 +1,10 @@
-import { Event, EventType, GeneralEventType, ReccuringType, SchoolSubtype} from "@/lib/types/event"
-import { useEffect, useState } from "react";
+import { Event, EventType, GeneralEventType, ReccuringType, SchoolSubtype, PRIORITYLEVEL, Priority} from "@/lib/types/event"
 import { capitalizeString, EVENT_TYPE_COLORS, formattedDate, SCHOOL_SUB_TYPES } from "@/lib/event-utils";
-import { PRIORITYLEVEL, Priority } from "@/lib/types/event";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { TabsList, Tabs, TabsTrigger } from "@/components/ui/tabs";
-import { Course } from "@/lib/types/event";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import EventField from "../eventField";
 import { Separator } from "@/components/ui/separator";
@@ -14,18 +12,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
 import { useEditUserEvent } from "@/convex/mutations";
-import { useCreateUserEvent, useGetUserEvent } from "@/convex/queries";
+import { useCreateUserEvent, useGetUserCourses } from "@/convex/queries";
 
 type EventTypeProps = {
   event : Event,
   editMode : boolean | undefined
-  courses : Course[] | undefined,
   setOpen : React.Dispatch<SetStateAction<boolean>>
   userId : string,
   day : string | undefined,
 }
 
-export default function EventOnType({ event, editMode, courses, setOpen,userId,day}: EventTypeProps){
+export default function EventOnType({ event, editMode, setOpen,userId,day}: EventTypeProps){
+  const{data : courses, isLoading , isError, error} = useGetUserCourses(userId)
 
   const addNewUserEvent = useCreateUserEvent();
   const updateUserEvent = useEditUserEvent();
@@ -130,7 +128,13 @@ export default function EventOnType({ event, editMode, courses, setOpen,userId,d
 
     const schoolDetails = formData.schoolDetails;
 
-    if ( schoolDetails ) {
+    const isSchoolDetailsFilled =
+        schoolDetails?.schoolSubType !== "" as SchoolSubtype ||
+        schoolDetails?.course !== "" ||
+        schoolDetails?.assignmentDetails?.assignmentName !== "" ||
+        schoolDetails?.assignmentDetails?.assignmentDueDate !== "";
+
+    if ( schoolDetails && isSchoolDetailsFilled) {
       try {
         updateUserEvent.mutate({
           id: formData.id,
@@ -217,12 +221,14 @@ export default function EventOnType({ event, editMode, courses, setOpen,userId,d
       if (editMode) {
         try {
           handleEdit();
+          resetForm();
         } catch (e) {
           console.error(`There was an error editing: ${e}`);
         }
       } else {
         try {
           handleCreate();
+          resetForm();
         } catch (e) {
           console.error(`There was an error creating: ${e}`);
         }
@@ -230,6 +236,21 @@ export default function EventOnType({ event, editMode, courses, setOpen,userId,d
   };
 
 
+
+  if(isLoading){
+    return(
+      <div>
+        Loading courses..
+      </div>
+    )
+  }
+  if(isError){
+    return(
+      <div>
+        There was an error: {String(error)}
+      </div>
+    )
+  }
   return(
    <form onSubmit={handleSubmit}>
      <div>

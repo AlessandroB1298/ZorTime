@@ -112,10 +112,10 @@ export const getUserEvents = query({
     userId: v.string(),
   },
   handler: async (ctx, args): Promise<Event[]> => {
-    return await ctx.db
+    return (await ctx.db
       .query("user_events")
       .filter((q) => q.eq(q.field("created_by"), args.userId))
-      .collect();
+      .collect()) as Event[]; // type cast as Event[]
   },
 });
 
