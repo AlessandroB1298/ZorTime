@@ -51,6 +51,11 @@ export interface Event {
       assignmentDueDate: string;
       assignmentName: string;
     };
+    examDetails?: {
+      examDate: string;
+      examName: string;
+      course: string;
+    };
   };
 }
 
@@ -76,3 +81,6 @@ export const PRIORITYLEVEL: Record<string, { bg: string; label: string }> = {
     bg: "bg-red-500",
   },
 };
+
+export type AssignmentKey = "assignmentDueDate" | "assignmentName";
+export type ExamKey = "examDate" | "examName" | "course";
