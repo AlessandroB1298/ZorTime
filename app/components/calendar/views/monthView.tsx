@@ -18,6 +18,9 @@ import {
 } from "@/components/ui/dialog";
 import { AgendaView } from "@/app/components/calendar/views/agenda";
 import FinalEventForm from "../finalEventForm";
+import { useGetUserCourses } from "@/convex/queries";
+import { Loader2 } from "lucide-react";
+import { getCourseColor } from "@/lib/event-utils";
 
 interface MonthViewProps {
   events: Event[];
@@ -30,12 +33,31 @@ export function MonthView({
   currentDate,
   userId,
 }: Readonly<MonthViewProps>) {
-
+  const {data, isLoading , isError , error } = useGetUserCourses(userId);
   const monthDays = getMonthDays(new Date(currentDate));
   const today = new Date();
   const currentMonth = currentDate.getMonth();
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
+
+  if(isLoading){
+    return(
+      <div className="flex items-center justify-center">
+        <Loader2 className="animate-spin"/>
+      </div>
+    )
+  }
+  if(isError){
+    return(
+      <div className="flex items-center justify-center">
+        <div>
+          {error?.message+"" +error?.stack}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <Card className="p-4 border-white">
@@ -71,13 +93,52 @@ export function MonthView({
                   </div>
                   <div className="space-y-1 ">
                     {dayEvents.slice(0, 3).map((event) => {
+
                       const colors = EVENT_TYPE_COLORS[event.type];
+
                       return (
-                        <div
-                          key={event.id}
-                          className={`text-[10px] rounded px-1 py-0.5 truncate ${colors.bg} ${colors.text}`}
-                        >
-                          {getEventName(event)}
+                        <div key={event.id}>
+                          {event.type == "school"  && data && event.schoolDetails?.course ? (
+                            <div>
+                              <div
+                                key={event.id}
+                                style={{backgroundColor : getCourseColor(event.schoolDetails.course, data)}}
+                                className={`text-[10px] rounded px-1 py-0.5 truncate`}
+                              >
+                               {event.completed ? (
+                                 <>
+                                   <span className="line-through">
+                                     {getEventName(event)}
+                                   </span>
+
+                                 </>
+                               ): (
+                                 <>
+                                   {getEventName(event)}
+                                 </>
+                               )}
+                              </div>
+                            </div>
+                          ):(
+                            <div
+                              key={event.id}
+                              className={`text-[10px] rounded px-1 py-0.5 truncate ${colors.bg}`}
+                            >
+                             {event.completed ? (
+                               <>
+                                 <span className="line-through">
+                                   {getEventName(event)}
+                                 </span>
+
+                               </>
+                             ): (
+                               <>
+                                 {getEventName(event)}
+
+                               </>
+                             )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}

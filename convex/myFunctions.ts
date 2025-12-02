@@ -71,6 +71,11 @@ export const createEvent = mutation({
           assginmentDueDate: v.string(),
           assignmentName: v.string(),
         }),
+        examDetails: v.object({
+          examDate: v.string(),
+          examName: v.string(),
+          course: v.string(),
+        }),
       }),
     ),
   },
@@ -150,6 +155,7 @@ export const updateUserEvent = mutation({
     event_date: v.optional(v.string()),
     event_desc: v.optional(v.string()),
     meetingUrl: v.optional(v.string()),
+    completed: v.optional(v.boolean()),
     priority: v.optional(v.string()),
     schoolDetails: v.optional(
       v.object({
@@ -159,6 +165,11 @@ export const updateUserEvent = mutation({
         assignmentDetails: v.object({
           assginmentDueDate: v.string(),
           assignmentName: v.string(),
+        }),
+        examDetails: v.object({
+          examDate: v.string(),
+          examName: v.string(),
+          course: v.string(),
         }),
       }),
     ),
@@ -176,6 +187,7 @@ export const updateUserEvent = mutation({
         start_time: args.start_time,
         end_time: args.end_time,
         location: args.location,
+        completed: args.completed,
         isRecurring: args.isRecurring,
         recurring_pattern: args.recurring_pattern,
         event_date: args.event_date,

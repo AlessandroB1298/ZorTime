@@ -54,16 +54,22 @@ export function AgendaView({
         const year : number = dateParts[0] as unknown as number;
         const month = parseInt(dateParts[1], 10) - 1;
         const date : number = dateParts[2] as unknown as number;
-
         dateKey = new Date(year, month, date).toDateString();
+
       }else if(event.schoolDetails){
         switch(event.schoolDetails.schoolSubType){
           case "assignment":
             if(event.schoolDetails.assignmentDetails){
               const obj = Object.values(event.schoolDetails.assignmentDetails);
-              const assignmentDate =obj[0];
-              dateKey = assignmentDate;
+              dateKey = obj[0];
+              break;
             }
+            case "exam":
+              if(event.schoolDetails.examDetails){
+                const obj = Object.values(event.schoolDetails.examDetails);
+                dateKey = obj[1];
+                break;
+              }
         }
       }
       if (!acc[dateKey]) {
@@ -87,7 +93,7 @@ export function AgendaView({
             </div>
             <div className="space-y-3 ml-6">
               {dayEvents.map((event) => {
-                const colors = EVENT_TYPE_COLORS[event.type];
+                const colors = EVENT_TYPE_COLORS[event.type]  ;
                 return (
                   <div
                     key={event.id}

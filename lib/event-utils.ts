@@ -1,4 +1,5 @@
-import type { Event, GroupedEvent } from "./types/event";
+import { match } from "node:assert";
+import type { Course, Event, GroupedEvent } from "./types/event";
 
 export type ConvertedEvent = Omit<Event, "start_time" | "end_time"> & {
   start_time: Date;
@@ -77,6 +78,14 @@ export function updatedFormatTime(event: ConvertedEvent): string {
           const assignmentDate = new Date(obj[0]);
           const date = assignmentDate.toLocaleDateString();
           const time = assignmentDate.toLocaleTimeString();
+          return `${date}-${time}`;
+        }
+      case "exam":
+        if (event.schoolDetails.examDetails) {
+          const obj = Object.values(event.schoolDetails.examDetails);
+          const examDate = new Date(obj[1]);
+          const date = examDate.toLocaleDateString();
+          const time = examDate.toLocaleTimeString();
           return `${date}-${time}`;
         }
     }
@@ -167,8 +176,15 @@ export function getEventName(event: Event | ConvertedEvent): string {
     switch (event.schoolDetails?.schoolSubType) {
       case "assignment":
         if (event.schoolDetails.assignmentDetails) {
-          const obj = Object.values(event.schoolDetails.assignmentDetails);
-          return obj[1];
+          const assignmentName =
+            event.schoolDetails.assignmentDetails["assignmentName"];
+          return assignmentName;
+        }
+      case "exam":
+        if (event.schoolDetails.examDetails) {
+          const examName = event.schoolDetails.examDetails["examName"];
+          const course = event.schoolDetails.examDetails["course"];
+          return course + " " + examName;
         }
     }
   }
@@ -193,6 +209,12 @@ export function getEventsForDay(events: Event[], date: Date): Event[] {
             const assignmentDate = obj[0];
             return isSameDay(new Date(assignmentDate), date);
           }
+        case "exam":
+          if (event.schoolDetails.examDetails) {
+            const obj = Object.values(event.schoolDetails.examDetails);
+            const examDate = obj[1];
+            return isSameDay(new Date(examDate), date);
+          }
       }
     }
     const eventDate = correctedUTCDate(event.event_date);
@@ -212,8 +234,9 @@ export function getEventsForWeek(events: Event[], date: Date): Event[] {
 }
 
 export function getEventsForMonth(events: Event[], date: Date): Event[] {
-  const year = date.getFullYear();
-  const month = date.getMonth();
+  const updatedDate = date.toISOString();
+  const year = updatedDate.split("-")[0];
+  const month = updatedDate.split("-")[1];
 
   return events.filter((event) => {
     if (event.type == "school") {
@@ -223,14 +246,26 @@ export function getEventsForMonth(events: Event[], date: Date): Event[] {
             const obj = Object.values(event.schoolDetails.assignmentDetails);
             const assignmentDate = new Date(obj[0]);
             return (
-              assignmentDate.getFullYear() === year &&
-              assignmentDate.getMonth() === month
+              assignmentDate.toISOString().split("-")[0] === year &&
+              assignmentDate.toISOString().split("-")[1] === month
+            );
+          }
+        case "exam":
+          if (event.schoolDetails.examDetails) {
+            const obj = Object.values(event.schoolDetails.examDetails);
+            const examDate = new Date(obj[1]);
+            return (
+              examDate.toISOString().split("-")[0] === year &&
+              examDate.toISOString().split("-")[1] === month
             );
           }
       }
     }
     const eventDate = new Date(event.event_date);
-    return eventDate.getFullYear() === year && eventDate.getMonth() === month;
+    return (
+      eventDate.toISOString().split("-")[0] === year &&
+      eventDate.toISOString().split("-")[1] === month
+    );
   });
 }
 
@@ -362,3 +397,23 @@ export function parseISOString(date: string): string {
 
   return split_date[0];
 }
+
+/**
+ * Finds the color for a given course name from the course data array.
+ * @param courseName The name of the course from the event (e.g., event.schoolDetails?.course).
+ * @param courses The array of course objects containing names and colors.
+ * @returns The course color string (e.g., 'bg-red-500') or a default string if not found.
+ */
+export const getCourseColor = (courseName: string, courses: Course[]) => {
+  if (!courseName || !courses) {
+    return "bg-gray-200"; // Default color if data is missing
+  }
+
+  // Use .find() to get the matching course object
+  const matchingCourse = courses.find(
+    (course) => course.course_name === courseName,
+  );
+
+  // Return the color if a match is found, otherwise return a default color
+  return matchingCourse ? matchingCourse.course_color : "bg-gray-200";
+};

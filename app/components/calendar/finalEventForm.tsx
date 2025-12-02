@@ -78,13 +78,10 @@ export default function FinalEventForm({
         type: data.type as GeneralEventType || defaultEvent.type ,
         event_name: data.event_name || "",
 
-        // Use the fetched data for all complex conversions
         event_date: parseISOString(data.event_date),
         start_time: data.start_time,
         end_time: data.end_time,
-
-
-        // Map the remaining simple fields
+        completed : data.completed || false,
         location: data.location || "",
         isRecurring: data.isRecurring || false,
         recurringPattern:
@@ -98,6 +95,11 @@ export default function FinalEventForm({
           assignmentDetails: {
             assignmentDueDate: data.schoolDetails?.assignmentDetails?.assginmentDueDate ?? "",
             assignmentName : data.schoolDetails?.assignmentDetails?.assignmentName ?? "",
+          },
+          examDetails : {
+            examDate : data.schoolDetails?.examDetails?.examDate ?? "",
+            examName : data.schoolDetails?.examDetails?.examName ?? "",
+            course : data.schoolDetails?.examDetails?.course ?? ""
           }
         }
       });
@@ -122,6 +124,10 @@ export default function FinalEventForm({
             if(event.schoolDetails.assignmentDetails){
                 return event.schoolDetails.assignmentDetails?.assignmentName
             }
+            case "exam":
+                if(event.schoolDetails.examDetails){
+                    return event.schoolDetails.examDetails?.examName
+                }
       }
     }
 

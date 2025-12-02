@@ -1,4 +1,4 @@
-import { Event, EventType, GeneralEventType, ReccuringType, SchoolSubtype, PRIORITYLEVEL, Priority} from "@/lib/types/event"
+import { Event, EventType, GeneralEventType, ReccuringType, SchoolSubtype, PRIORITYLEVEL, Priority, ExamKey, AssignmentKey} from "@/lib/types/event"
 import { capitalizeString, EVENT_TYPE_COLORS, formattedDate, SCHOOL_SUB_TYPES } from "@/lib/event-utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,6 +36,7 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
     event_name: event.event_name || "",
     event_date: event.event_date || "",
     start_time: event.start_time || "",
+    completed : event.completed || false,
     end_time: event.end_time || "",
     location: event.location || "",
     isRecurring: event.isRecurring || false,
@@ -49,6 +50,11 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
       assignmentDetails : {
         assignmentName : event.schoolDetails?.assignmentDetails?.assignmentName ?? "",
         assignmentDueDate : event.schoolDetails?.assignmentDetails?.assignmentDueDate ?? ""
+      },
+      examDetails : {
+        examDate : event.schoolDetails?.examDetails?.examDate ?? "",
+        examName : event.schoolDetails?.examDetails?.examName ?? "",
+        course : event.schoolDetails?.examDetails?.course ?? ""
       }
     },
 
@@ -82,6 +88,11 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
          assignmentDetails: {
            assginmentDueDate : schoolDetails.assignmentDetails?.assignmentDueDate ?? "",
            assignmentName :schoolDetails.assignmentDetails?.assignmentName ?? ""
+         },
+         examDetails: {
+           examDate : schoolDetails.examDetails?.examDate ?? "",
+           examName : schoolDetails.examDetails?.examName ?? "",
+           course : schoolDetails.course ?? ""
          }
        },
        event_date : formData.event_date,
@@ -144,6 +155,7 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
           start_time: formData.start_time,
           end_time: formData.end_time,
           location: formData.location,
+          completed : formData.completed,
           isRecurring: formData.isRecurring,
           recurring_pattern: formData.recurringPattern,
           event_desc: formData.event_desc,
@@ -155,6 +167,11 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
               assginmentDueDate: schoolDetails.assignmentDetails?.assignmentDueDate ?? "",
               assignmentName: schoolDetails.assignmentDetails?.assignmentName ?? "",
             },
+            examDetails : {
+              examDate : schoolDetails.examDetails?.examDate ?? "",
+              examName : schoolDetails.examDetails?.examName ?? "",
+              course : schoolDetails.examDetails?.course ?? ""
+            }
           },
         });
       } catch (e) {
@@ -169,6 +186,7 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
       start_time: startDateTime.toISOString(),
       end_time: endDateTime.toISOString(),
       location: formData.location,
+      completed : formData.completed,
       isRecurring: formData.isRecurring,
       recurring_pattern: formData.recurringPattern,
       event_desc: formData.event_desc,
@@ -180,6 +198,11 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
           assginmentDueDate:  formData.schoolDetails?.assignmentDetails?.assignmentDueDate ?? "",
           assignmentName:  formData.schoolDetails?.assignmentDetails?.assignmentName ?? "",
         },
+        examDetails : {
+          examDate : formData.schoolDetails?.examDetails?.examDate ?? "",
+          examName : formData.schoolDetails?.examDetails?.examName ?? "",
+          course : formData.schoolDetails?.course ?? ""
+        }
       },
 
     });
@@ -251,19 +274,83 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
       </div>
     )
   }
+
+
+
+  const renderSchoolDetailssEventNameField = (
+    event: Event,
+    type : string,
+    detailKey: 'assignmentDetails' | 'examDetails',
+    fieldKey: AssignmentKey | ExamKey,
+    fieldValue: string | undefined
+  ) => {
+    const schoolDetails = event.schoolDetails;
+
+    if (!schoolDetails || fieldValue === undefined) {
+      return null;
+    }
+
+    const currentDetailObject = schoolDetails[detailKey];
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const updatedDetailObject = {
+        ...currentDetailObject,
+        [fieldKey]: e.target.value,
+      };
+
+      const updatedSchoolDetails = {
+        ...schoolDetails,
+        [detailKey]: updatedDetailObject,
+      };
+
+      setFormData({
+        ...event,
+        schoolDetails: updatedSchoolDetails,
+      });
+    };
+
+    return (
+     <div className="space-y-2">
+       <Input
+         type ={type}
+         id={`${schoolDetails.schoolSubType}-${fieldKey}`}
+         value={fieldValue}
+         onChange={handleInputChange}
+       />
+     </div>
+    );
+  };
+
+
   return(
    <form onSubmit={handleSubmit}>
-     <div>
+     <div className="">
          {editMode ? (
-           <div className="space-y-2">
+           <div className="space-y-2 ">
              <Label htmlFor="type">Event Type</Label>
 
              <div className="flex items-center gap-2">
                <div
                  className={`h-3 w-3 rounded-full ${EVENT_TYPE_COLORS[formData.type].bg}`}
                ></div>
-               <div>{capitalizeString(formData.type)}</div>
+               <div className="flex w-full justify-between">{capitalizeString(formData.type)}</div>
+               <div className="flex items-center gap-2">
+                 <Checkbox
+                   id="completed"
+                   checked={formData.completed}
+                   onCheckedChange={(checked) =>
+                     setFormData({
+                       ...formData,
+                       completed: checked as boolean,
+                     })
+                   }
+                 />
+                 <Label htmlFor="recurring" className="cursor-pointer">
+                    Completed?
+                 </Label>
+               </div>
              </div>
+
            </div>
          ) : (
            <div className="flex w-full max-w-sm flex-col gap-6">
@@ -405,54 +492,64 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
             </div>
              <div className={"space-y-2"}>
                <h3 className={"flex text-sm opacity-65 mt-3"}>{capitalizeString(formData.schoolDetails?.schoolSubType)} Details</h3>
+               {formData.schoolDetails?.schoolSubType == "assignment" && (
+                       <div className="grid grid-cols-2 gap-4 mt-4">
+                       <div className="space-y-2 ">
+                         <Label htmlFor={`${formData.schoolDetails?.schoolSubType}`}>{capitalizeString(formData.schoolDetails?.schoolSubType)} Name</Label>
+                         {renderSchoolDetailssEventNameField(
+                             formData,
+                             "",
+                             "assignmentDetails",
+                             "assignmentName",
+                             formData.schoolDetails.assignmentDetails?.assignmentName
+                         )}
+
+                       </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`${formData.schoolDetails?.schoolSubType}`}>{capitalizeString(formData.schoolDetails?.schoolSubType)} Due Date</Label>
+                            {renderSchoolDetailssEventNameField(
+                                formData,
+                                "datetime-local",
+                                "assignmentDetails",
+                                "assignmentDueDate",
+                                formData.schoolDetails.assignmentDetails?.assignmentDueDate
+                            )}
+                        </div>
+
+                       </div>
+                   )}
+
+
+               {formData.schoolDetails?.schoolSubType == "exam" && (
+                       <div className="grid grid-cols-2 gap-4 mt-4">
+                       <div className="space-y-2 ">
+                         <Label htmlFor={`${formData.schoolDetails?.schoolSubType}`}>{capitalizeString(formData.schoolDetails?.schoolSubType)} Name</Label>
+                         {renderSchoolDetailssEventNameField(
+                             formData,
+                             "",
+                             "examDetails",
+                             "examName",
+                             formData.schoolDetails.examDetails?.examName
+                         )}
+
+                       </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`${formData.schoolDetails?.schoolSubType}`}>{capitalizeString(formData.schoolDetails?.schoolSubType)} Due Date</Label>
+                            {renderSchoolDetailssEventNameField(
+                                formData,
+                                "datetime-local",
+                                "examDetails",
+                                "examDate",
+                                formData.schoolDetails.examDetails?.examDate
+                            )}
+                        </div>
+
+                       </div>
+                   )}
              </div>
-             <Separator/>
-             <div className="grid grid-cols-2 gap-4 mt-4">
 
 
-               <div className="space-y-2">
-                 <Label htmlFor={`${formData.schoolDetails?.schoolSubType}`}>{capitalizeString(formData.schoolDetails?.schoolSubType)} Name</Label>
-                 {formData.schoolDetails?.schoolSubType == "assignment" && (
-                   <Input
-                     id={`${formData.schoolDetails?.schoolSubType}`}
-                     value={formData.schoolDetails.assignmentDetails?.assignmentName ?? ""}
-                     onChange={(e)=>{
-                       setFormData({...formData, schoolDetails:{
-                         assignmentDetails : {
-                           assignmentDueDate : formData.schoolDetails?.assignmentDetails?.assignmentDueDate as string ,
-                           assignmentName : e.target.value
-                         },
-                         course : formData.schoolDetails?.course as string,
-                         schoolSubType : formData.schoolDetails?.schoolSubType as SchoolSubtype,
-                       }})
-                     }}
-                   />
-                 )}
-               </div>
-
-               <div className="space-y-2">
-                 {formData.schoolDetails?.schoolSubType == "assignment" && (
-                   <div>
-                     <Label htmlFor={`${formData.schoolDetails?.schoolSubType}`}>{capitalizeString(formData.schoolDetails?.schoolSubType)} Due Date</Label>
-                     <Input
-                       id={`${formData.schoolDetails?.schoolSubType} date`}
-                       value={formData.schoolDetails.assignmentDetails?.assignmentDueDate ?? ""}
-                       type="datetime-local"
-                       onChange={(e)=>{
-                         setFormData({...formData, schoolDetails:{
-                           assignmentDetails : {
-                             assignmentDueDate :e.target.value,
-                             assignmentName : formData.schoolDetails?.assignmentDetails?.assignmentName as string,
-                           },
-                           course : formData.schoolDetails?.course as string,
-                           schoolSubType : formData.schoolDetails?.schoolSubType as SchoolSubtype,
-                         }})
-                       }}
-                     />
-                   </div>
-                 )}
-               </div>
-           </div>
+             <Separator className="mt-4"/>
 
 
           <div className="mt-3">

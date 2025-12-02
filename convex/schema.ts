@@ -48,6 +48,7 @@ export const eventSchema = {
     event_date: v.string(),
     event_desc: v.optional(v.string()),
     meetingUrl: v.optional(v.string()),
+    completed: v.optional(v.boolean()),
     priority: v.optional(v.string()),
     recurring_pattern: v.optional(v.string()),
     schoolDetails: v.optional(
@@ -58,6 +59,12 @@ export const eventSchema = {
         assignmentDetails: v.object({
           assginmentDueDate: v.string(),
           assignmentName: v.string(),
+        }),
+
+        examDetails: v.object({
+          examDate: v.string(),
+          examName: v.string(),
+          course: v.string(),
         }),
       }),
     ),
