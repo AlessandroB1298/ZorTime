@@ -42,7 +42,7 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
     isRecurring: event.isRecurring || false,
     recurringPattern: event.recurringPattern || "weekly" as "daily" | "weekly" | "monthly",
     meetingUrl: event.meetingUrl || "",
-    priority: event.priority || "low" as "low" | "medium" | "high",
+    priority: event.priority || "" as "low" | "medium" | "high",
     event_desc: event.event_desc || "",
     schoolDetails : {
       schoolSubType : event.schoolDetails?.schoolSubType as SchoolSubtype,
