@@ -23,6 +23,51 @@ export const createCourse = mutation({
   },
 });
 
+export const updateCourse = mutation({
+  args: {
+    created_by: v.string(),
+    id: v.string(),
+    course_color: v.string(),
+    course_name: v.string(),
+    prof: v.string(),
+    course_code: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const course = await ctx.db
+      .query("user_courses")
+      .filter((q) => q.eq(q.field("id"), args.id))
+      .unique();
+
+    if (course) {
+      await ctx.db.patch(course._id, {
+        created_by: args.created_by,
+        id: args.id,
+        course_code: args.course_code,
+        course_color: args.course_color,
+        course_name: args.course_name,
+        prof: args.prof,
+      });
+    }
+  },
+});
+
+export const deleteCourse = mutation({
+  args: {
+    id: v.string(),
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const course = await ctx.db
+      .query("user_courses")
+      .filter((q) => q.eq(q.field("id"), args.id))
+      .unique();
+
+    if (course && course.created_by === args.userId) {
+      await ctx.db.delete(course._id);
+    }
+  },
+});
+
 export const createAssignment = mutation({
   args: {
     created_by: v.string(),

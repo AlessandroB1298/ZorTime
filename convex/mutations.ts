@@ -16,3 +16,13 @@ export function useCreateCourse() {
   const mutationFn = useConvexMutation(api.myFunctions.createCourse);
   return useMutation({ mutationFn });
 }
+
+export function useUpdateCourse() {
+  const mutationFn = useConvexMutation(api.myFunctions.updateCourse);
+  return useMutation({ mutationFn });
+}
+
+export function useDeleteCourse() {
+  const mutationFn = useConvexMutation(api.myFunctions.deleteCourse);
+  return useMutation({ mutationFn });
+}
