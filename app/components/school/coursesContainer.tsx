@@ -108,7 +108,7 @@ export default function CoursesContainer({courses, user_id}: CoursesContainerPro
 
 
   return(
-        <Card className="m-3 ">
+        <Card className="m-8">
             <CardHeader>
               <div className="flex justify-between m-0 p-0">
                 <CardTitle>My Courses</CardTitle>

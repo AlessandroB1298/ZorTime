@@ -80,8 +80,8 @@ export function MonthView({
               <DialogTrigger className={"cursor-pointer"} asChild>
                 <div
                   key={index + 1}
-                  className={`min-h-[100px] rounded-lg border p-2 ${
-                    isToday ? "bg-popover/50 border-primary" : "bg-primary"
+                  className={`min-h-[100px]  rounded-lg border p-2 ${
+                    isToday ? "bg-popover/50 border-primary" : "bg-background/80"
                   } ${!isCurrentMonth ? "opacity-40" : ""}`}
                 >
                   <div
@@ -97,7 +97,7 @@ export function MonthView({
                       const colors = EVENT_TYPE_COLORS[event.type];
 
                       return (
-                        <div key={event.id}>
+                        <div className="h-4" key={event.id}>
                           {event.type == "school"  && data && event.schoolDetails?.course ? (
                             <div>
                               <div

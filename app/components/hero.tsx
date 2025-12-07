@@ -74,7 +74,7 @@ export default function Hero() {
               className="text-5xl z-20 md:text-6xl lg:text-7xl font-bold tracking-tight text-balance max-w-4xl text-foreground"
             >
               Take Control of Your{" "}
-              <span className="text-accent">Most Valuable</span> Resource
+              <span className="text-primary">Most Valuable</span> Resource
             </h1>
 
             <p

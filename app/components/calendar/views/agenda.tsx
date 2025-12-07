@@ -6,6 +6,8 @@ import {
   getEventsForMonth,
   getEventName,
   updatedFormatTime,
+  getDateKey,
+  orderDates,
 } from "@/lib/event-utils";
 import { Card } from "@/components/ui/card";
 import { MapPin, Clock, Calendar, Repeat, Trash2 } from "lucide-react";
@@ -39,7 +41,7 @@ export function AgendaView({
 
   if (monthEvents.length === 0) {
     return (
-      <Card className="p-12 text-center bg-primary border-secondary">
+      <Card className="p-12 text-center bg-primary/20 border-secondary">
         <p className="text-background/50">No events scheduled</p>
       </Card>
     );
@@ -49,43 +51,46 @@ export function AgendaView({
   const groupedEvents = monthEvents.reduce(
     (acc, event) => {
       let dateKey = "";
-      if(event.type != "school"){
-        const dateParts = event.event_date.split("T")[0].split("-")
-        const year : number = dateParts[0] as unknown as number;
-        const month = parseInt(dateParts[1], 10) - 1;
-        const date : number = dateParts[2] as unknown as number;
-        dateKey = new Date(year, month, date).toDateString();
+      if (event.type !== "school") {
+            const dateString = event.event_date.split("T")[0];
+            dateKey = getDateKey(dateString)
 
-      }else if(event.schoolDetails){
+          } else if(event.schoolDetails){
         switch(event.schoolDetails.schoolSubType){
           case "assignment":
             if(event.schoolDetails.assignmentDetails){
               const obj = Object.values(event.schoolDetails.assignmentDetails);
-              dateKey = obj[0];
+              const dateKeySplit = obj[0].split("T")[0];
+              dateKey = getDateKey(dateKeySplit);
               break;
             }
             case "exam":
               if(event.schoolDetails.examDetails){
                 const obj = Object.values(event.schoolDetails.examDetails);
-                dateKey = obj[1];
+                const dateKeySplit = obj[1].split("T")[0];
+                dateKey = getDateKey(dateKeySplit);
                 break;
               }
         }
       }
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-      acc[dateKey].push(event);
+      if (dateKey !== "") {
+              if (!acc[dateKey]) {
+                acc[dateKey] = [];
+              }
+              acc[dateKey].push(event);
+          }
       return acc;
     },
     {} as Record<string, ConvertedEvent[]>
   );
 
 
+  const orderedGroupedEvents = orderDates(groupedEvents);
+
   return (
     <Card className="overflow-hidden border dark:border-white border-muted">
       <div className="divide-y divide-border">
-        {Object.entries(groupedEvents).map(([dateKey, dayEvents]) => (
+        {Object.entries(orderedGroupedEvents).map(([dateKey, dayEvents]) => (
           <div key={dateKey} className="p-4">
             <div className="flex items-center gap-2 mb-3">
               <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -97,7 +102,7 @@ export function AgendaView({
                 return (
                   <div
                     key={event.id}
-                    className="flex items-start gap-3 p-3 rounded-lg bg-primary/50"
+                    className="flex items-start gap-3 p-3 rounded-lg bg-primary/20"
                   >
                     <div
                       className={`h-10 w-1 rounded-full ${colors.bg} flex-shrink-0`}
@@ -106,7 +111,7 @@ export function AgendaView({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <div className={`h-2 w-2 rounded-full ${colors.bg}`} />
-                        <span className="text-xs font-medium text-muted-foreground uppercase">
+                        <span className="text-xs font-medium text-foreground uppercase">
                           {colors.label}
                         </span>
 
@@ -125,8 +130,21 @@ export function AgendaView({
                         )}
                       </div>
 
-                      <h4 className="font-semibold mb-2">{getEventName(event)}</h4>
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                      <h4 className="font-semibold mb-2">
+                        {event.completed ? (
+                          <>
+                            <span className="line-through">
+                              {getEventName(event)}
+                            </span>
+
+                          </>
+                        ): (
+                          <>
+                            {getEventName(event)}
+                          </>
+                        )}
+                      </h4>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/70">
                         <div className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5" />
                           <span>

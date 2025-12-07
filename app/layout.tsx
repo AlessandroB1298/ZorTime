@@ -16,15 +16,15 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <ClerkProvider>
+      <ClerkProvider >
         <html lang="en" suppressHydrationWarning>
           <head />
           <ReactLenis root>
             <body>
               <ThemeProvider
                 attribute="class"
+                themes={['light', 'dark', 'citynights', 'lavender', 'raos']}
                 defaultTheme="dark"
-                enableSystem
                 disableTransitionOnChange
               >
                 {children}

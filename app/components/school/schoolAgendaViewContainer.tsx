@@ -32,9 +32,7 @@ export default function SchoolAgendaViewContainer({user_id}: SchoolAgendaViewCon
   return(
     <div>
       <div className="flex items-center justify-between m-4">
-          <div>
-            <h1 className="mb-2">School Agenda</h1>
-        </div>
+
       </div>
      {data && (
        <div>
