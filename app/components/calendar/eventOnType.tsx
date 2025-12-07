@@ -703,7 +703,7 @@ export default function EventOnType({ event, editMode, setOpen,userId,day}: Even
                  type="url"
                  stateName="meetingUrl"
                  fieldName="Meeting URL"
-                 isRequired={true}
+                 isRequired={false}
                  prevFormData={formData}
                  setFormData={setFormData}
                />

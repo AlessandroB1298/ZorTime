@@ -67,6 +67,41 @@ export const formattedDate = (event_date: string, time: string): Date => {
   return new Date(`${event_date}T${time}`);
 };
 
+export const getDateKey = (date: string): string => {
+  const dateKeySplit = date.split("-");
+  console.log(dateKeySplit);
+  const result = new Date(
+    Number(dateKeySplit[0]),
+    Number(dateKeySplit[1]) - 1,
+    Number(dateKeySplit[2]),
+  ).toISOString();
+  console.log(result);
+  return result;
+};
+
+export const orderDates = (
+  groupedEvents: Record<string, ConvertedEvent[]>,
+): Record<string, ConvertedEvent[]> => {
+  const dateKeys = Object.keys(groupedEvents);
+  // Assuming getDateKey returns a parsable date string (e.g., "YYYY-MM-DD")
+  const sortedDateKeys = dateKeys.sort((a, b) => {
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+    return dateA.getTime() - dateB.getTime(); // Ascending chronological order
+  });
+
+  // 3. Re-build the object in the desired order
+  const orderedGroupedEvents = sortedDateKeys.reduce(
+    (acc, dateKey) => {
+      // Reassign the original array of events using the sorted key
+      acc[dateKey] = groupedEvents[dateKey];
+      return acc;
+    },
+    {} as Record<string, ConvertedEvent[]>,
+  );
+  return orderedGroupedEvents;
+};
+
 export function updatedFormatTime(event: ConvertedEvent): string {
   if (event.type != "school") {
     return `${event.start_time.toLocaleTimeString()} - ${event.end_time.toLocaleTimeString()}`;
@@ -178,7 +213,7 @@ export function getEventName(event: Event | ConvertedEvent): string {
         if (event.schoolDetails.assignmentDetails) {
           const assignmentName =
             event.schoolDetails.assignmentDetails["assignmentName"];
-          return assignmentName;
+          return event.schoolDetails.course + " " + assignmentName;
         }
       case "exam":
         if (event.schoolDetails.examDetails) {

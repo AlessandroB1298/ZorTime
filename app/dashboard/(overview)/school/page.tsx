@@ -1,6 +1,5 @@
 "use client";
 import CourseViewContainer from '@/app/components/school/courseViewContainer';
-import SchoolAgenda from '@/app/components/school/schoolAgenda';
 import SchoolAgendaViewContainer from '@/app/components/school/schoolAgendaViewContainer';
 import { useUser } from '@clerk/nextjs'
 

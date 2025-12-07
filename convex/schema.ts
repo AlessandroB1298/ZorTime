@@ -68,7 +68,7 @@ export const eventSchema = {
         }),
       }),
     ),
-  }).index("byStartTime", ["start_time"]),
+  }).index("byUser", ["created_by"]),
 };
 
 export default defineSchema({

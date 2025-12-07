@@ -47,6 +47,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="ml-8">
         <UserButton
+
           showName
           appearance={{
             elements: {
@@ -54,6 +55,9 @@ export function AppSidebar() {
                 width: "40px",
                 height: "40px",
               },
+              userButtonOuterIdentifier: {
+                color : "white"
+              }
             },
           }}
         />

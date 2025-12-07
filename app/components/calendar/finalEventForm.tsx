@@ -10,7 +10,6 @@ import {
 import {  useGetUserEvent } from "@/convex/queries";
 import {
   capitalizeString,
-  convert12HourTo24Hour,
   parseISOString,
 } from "@/lib/event-utils";
 import {
@@ -52,7 +51,7 @@ export default function FinalEventForm({
     isRecurring: false,
     recurringPattern: "weekly" as "daily" | "weekly" | "monthly",
     meetingUrl: "",
-    priority: "low" as "low" | "medium" | "high",
+    priority: "" as "low" | "medium" | "high",
     event_desc: "",
     schoolDetails : {
       schoolSubType : "assignment" as SchoolSubtype,
