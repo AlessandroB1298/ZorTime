@@ -68,7 +68,7 @@ export function ProductCarousel() {
             ref={subtitleRef}
             className="text-lg text-foreground/80 max-w-2xl mx-auto leading-relaxed"
           >
-            A list of the unique and one of a kind features we offer
+           A collection of unique products we offer
           </p>
         </div>
       </div>

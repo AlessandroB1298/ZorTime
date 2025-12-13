@@ -69,18 +69,16 @@ export const formattedDate = (event_date: string, time: string): Date => {
 
 export const getDateKey = (date: string): string => {
   const dateKeySplit = date.split("-");
-  console.log(dateKeySplit);
   const result = new Date(
     Number(dateKeySplit[0]),
     Number(dateKeySplit[1]) - 1,
-    Number(dateKeySplit[2]),
+    Number(dateKeySplit[2])
   ).toISOString();
-  console.log(result);
   return result;
 };
 
 export const orderDates = (
-  groupedEvents: Record<string, ConvertedEvent[]>,
+  groupedEvents: Record<string, ConvertedEvent[]>
 ): Record<string, ConvertedEvent[]> => {
   const dateKeys = Object.keys(groupedEvents);
   // Assuming getDateKey returns a parsable date string (e.g., "YYYY-MM-DD")
@@ -97,7 +95,7 @@ export const orderDates = (
       acc[dateKey] = groupedEvents[dateKey];
       return acc;
     },
-    {} as Record<string, ConvertedEvent[]>,
+    {} as Record<string, ConvertedEvent[]>
   );
   return orderedGroupedEvents;
 };
@@ -330,7 +328,7 @@ export function groupEventCategory(events: Event[]): GroupedEvent[] {
       return {
         ...group,
       };
-    },
+    }
   );
 
   return finalEventGroup;
@@ -339,7 +337,7 @@ export function groupEventCategory(events: Event[]): GroupedEvent[] {
 export function formatEventDate(
   eventDate: string,
   start_time: string,
-  end_time: string,
+  end_time: string
 ): string {
   const start = new Date(eventDate);
   const today = new Date();
@@ -446,7 +444,7 @@ export const getCourseColor = (courseName: string, courses: Course[]) => {
 
   // Use .find() to get the matching course object
   const matchingCourse = courses.find(
-    (course) => course.course_name === courseName,
+    (course) => course.course_name === courseName
   );
 
   // Return the color if a match is found, otherwise return a default color

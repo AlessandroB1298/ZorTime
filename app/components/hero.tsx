@@ -102,7 +102,7 @@ export default function Hero() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-secondary text-secondary-foreground hover:bg-secondary/20 bg-transparent"
+                className="border-2 border-secondary text-secondary hover:bg-secondary/20 bg-transparent"
               >
                 Watch Demo
               </Button>

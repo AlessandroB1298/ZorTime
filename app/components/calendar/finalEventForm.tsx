@@ -38,7 +38,6 @@ export default function FinalEventForm({
   //fetch event via event id
   const { data, isLoading, isError, error } = useGetUserEvent(userId, id);
 
-
   const defaultEvent: Event = {
     id: "",
     created_by: "",
@@ -57,9 +56,10 @@ export default function FinalEventForm({
       schoolSubType : "assignment" as SchoolSubtype,
       course : "",
       assignmentDetails : {
-        assignmentDueDate : "",
+        assignmentDueDate : day?.split("Z")[0] ||"",
         assignmentName : ""
-      }
+      },
+
     },
 
   };

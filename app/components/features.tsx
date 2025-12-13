@@ -84,7 +84,8 @@ export default function Features() {
             ref={titleRef}
             className="text-4xl md:text-5xl font-bold mb-4 text-foreground"
           >
-            Everything You Need to Stay Productive
+            Everything You Need to Stay{" "}
+            <span className="text-primary">Productive</span>
           </h2>
           <p
             ref={subtitleRef}

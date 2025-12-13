@@ -18,7 +18,7 @@ export default function FeatureCard({
       <CardContent className="p-6">
         <div className="flex flex-col gap-4">
           <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center border border-accent/30">
-            <Icon className="w-6 h-6 text-accent" />
+            <Icon className="w-6 h-6 text-secondary" />
           </div>
           <div>
             <h3 className="text-xl font-semibold mb-2 text-orimary">
