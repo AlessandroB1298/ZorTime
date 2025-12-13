@@ -14,22 +14,22 @@ export default function ProductCard({
         <CardContent className="p-6">
           <div className="flex flex-col gap-4">
             <div className="flex flex-row items-center gap-2 ">
-              <div className="w-12 h-1 rounded-lg bg-orimary flex items-center justify-center border border-accent/30">
+              <div className="w-12 h-1 rounded-lg flex items-center justify-center ">
                 <Icon className="w-6 h-6 text-primary mb-2" />
               </div>
               <h3 className="text-xl font-semibold mb-2 text-foreground">
                 {productTitle}
               </h3>
             </div>
-           <div className="flex items-center justify-center">
-             <Image
-               className="rounded-xl"
-               width={300}
-               height={300}
-               src={placeholder}
-               alt=""
-             />
-           </div>
+            <div className="flex items-center justify-center">
+              <Image
+                className="rounded-xl"
+                width={300}
+                height={300}
+                src={placeholder}
+                alt=""
+              />
+            </div>
             <div>
               <p className="text-foreground/80 leading-relaxed">
                 {productDesc}

@@ -22,12 +22,7 @@ export const featurelist: featureType[] = [
       "Interactive notebook for random ideas and things you need to jot down.",
     featureIcon: Notebook,
   },
-  {
-    featureName: "Integrations",
-    featureDesc:
-      "Integrated with Canvas LMS, Google Calendar, and Notion for now.",
-    featureIcon: Workflow,
-  },
+
   {
     featureName: "Privacy First",
     featureDesc: "Your data is your data.",

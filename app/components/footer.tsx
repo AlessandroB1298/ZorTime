@@ -7,8 +7,8 @@ export default function Footer() {
       <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="flex flex-row gap-2 w-full">
-            <Hourglass size={30} color="#669bbc" />
-            <Link href="/" className="text-2xl font-extrabold">
+            <Hourglass size={30} className="text-primary" />
+            <Link href="/" className="text-2xl text-primary font-extrabold">
               Zortime
             </Link>
           </div>
@@ -24,14 +24,6 @@ export default function Footer() {
                     className="hover:underline "
                   >
                     Github
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="https://discord.gg/4eeurUVvTy"
-                    className="hover:underline"
-                  >
-                    Discord
                   </Link>
                 </li>
               </ul>

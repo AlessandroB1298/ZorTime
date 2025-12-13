@@ -1,37 +1,8 @@
 "use client"
-import { Sun, Moon, Flower2, Building2, CookingPot } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-// Define your themes with a consistent structure
-const themes = [
-  {
-    key: "light",
-    icon: Sun,
-    label: "Light",
-  },
-  {
-    key: "dark",
-    icon: Moon,
-    label: "Dark",
-  },
-  {
-    key: "citynights",
-    icon: Building2,
-    label: "City Nights",
-  },
-  {
-    key: "lavender",
-    icon: Flower2,
-    label: "Lavender",
-  },
-  {
-    key: "raos",
-    icon: CookingPot,
-    label: "Raos",
-  },
-];
+import { themes } from "@/lib/constants/themes";
 
 export default function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
@@ -41,9 +12,7 @@ export default function ThemeSwitcher() {
     setMounted(true);
   }, []);
 
-  useEffect(()=>{
-    console.log("theme: ", theme)
-  },[theme])
+
 
 
   if (!mounted) {

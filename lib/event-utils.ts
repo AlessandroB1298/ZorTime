@@ -69,13 +69,11 @@ export const formattedDate = (event_date: string, time: string): Date => {
 
 export const getDateKey = (date: string): string => {
   const dateKeySplit = date.split("-");
-  console.log(dateKeySplit);
   const result = new Date(
     Number(dateKeySplit[0]),
     Number(dateKeySplit[1]) - 1,
     Number(dateKeySplit[2]),
   ).toISOString();
-  console.log(result);
   return result;
 };
 
@@ -278,12 +276,16 @@ export function getEventsForMonth(events: Event[], date: Date): Event[] {
       switch (event.schoolDetails?.schoolSubType) {
         case "assignment":
           if (event.schoolDetails.assignmentDetails) {
-            const obj = Object.values(event.schoolDetails.assignmentDetails);
-            const assignmentDate = new Date(obj[0]);
-            return (
-              assignmentDate.toISOString().split("-")[0] === year &&
-              assignmentDate.toISOString().split("-")[1] === month
-            );
+            try {
+              const obj = Object.values(event.schoolDetails.assignmentDetails);
+              const assignmentDate = new Date(obj[0]);
+              return (
+                assignmentDate.toISOString().split("-")[0] === year &&
+                assignmentDate.toISOString().split("-")[1] === month
+              );
+            } catch (e) {
+              console.error(e);
+            }
           }
         case "exam":
           if (event.schoolDetails.examDetails) {
