@@ -1,10 +1,7 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
-import EventViewContainer from "@/app/components/calendar/viewContainers/eventViewContainer";
-import { useState } from "react";
 
 export default function Page() {
-  const [currentDate] = useState(new Date());
   const { user, isLoaded, isSignedIn } = useUser();
 
   if (!isLoaded || !isSignedIn) {
@@ -20,9 +17,7 @@ export default function Page() {
             {"'s"} Dashboard
           </h1>
         </div>
-        <div className="mt-6">
-          <EventViewContainer currentDate={currentDate} userId={user.id} />
-        </div>
+        <div className="mt-6"></div>
       </div>
     </div>
   );
